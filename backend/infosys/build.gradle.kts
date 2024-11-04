@@ -4,6 +4,7 @@ plugins {
 	id("org.springframework.boot") version "3.3.5"
 	id("io.spring.dependency-management") version "1.1.6"
 	kotlin("plugin.jpa") version "1.9.25"
+	kotlin("kapt") version "1.9.10"
 }
 
 group = "itmo.sleeter"
@@ -35,6 +36,8 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.liquibase:liquibase-core")
 	implementation("org.postgresql:postgresql:42.7.4")
+	implementation("org.mapstruct:mapstruct:1.6.0")
+	kapt("org.mapstruct:mapstruct-processor:1.6.0")
 	compileOnly("org.projectlombok:lombok")
 	developmentOnly("org.springframework.boot:spring-boot-docker-compose")
 	annotationProcessor("org.projectlombok:lombok")
@@ -47,6 +50,15 @@ dependencies {
 kotlin {
 	compilerOptions {
 		freeCompilerArgs.addAll("-Xjsr305=strict")
+	}
+}
+
+kapt {
+	keepJavacAnnotationProcessors = true
+	arguments {
+		arg("mapstruct.defaultComponentModel", "spring")
+		arg("mapstruct.unmappedTargetPolicy", "ERROR")
+		arg("mapstruct.injectionStrategy", "CONSTRUCTOR")
 	}
 }
 
