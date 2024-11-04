@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: infosys
+  datasource:
+    url: jdbc:postgresql://postgresql:5432/infosys
+    username: admin
+    password: password
+    driver-class-name: org.postgresql.Driver
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/changelog.xml
