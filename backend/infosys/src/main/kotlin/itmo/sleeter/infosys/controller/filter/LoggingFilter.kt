@@ -9,7 +9,7 @@ import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 
 @Component
-class LoggingFilter : OncePerRequestFilter() {
+class LoggingFilter: OncePerRequestFilter() {
     private val log: Logger = LogManager.getLogger(LoggingFilter::class.java)
 
     override fun doFilterInternal(
