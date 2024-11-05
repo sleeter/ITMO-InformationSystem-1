@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 
 @ControllerAdvice
-class ExceptionHandler {
-    private val log: Logger = LogManager.getLogger(ExceptionHandler::class.java)
+class ApiExceptionHandler {
+    private val log: Logger = LogManager.getLogger(ApiExceptionHandler::class.java)
 
     @ExceptionHandler(Exception::class)
     fun handleException(exception: Exception) : ResponseEntity<ApiResponse<*>> {
