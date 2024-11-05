@@ -16,7 +16,7 @@ data class FlatResponse(
     val furnish: String,
     val view: String,
     val transport: String,
-    val coordinate: CoordinateResponse,
+    val coordinates: CoordinateResponse,
     val house: HouseResponse,
     @JsonProperty("creation_date")
     val creationDate: Instant,
