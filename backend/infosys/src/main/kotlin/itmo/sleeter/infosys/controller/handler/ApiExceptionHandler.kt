@@ -14,12 +14,11 @@ class ApiExceptionHandler {
     private val log: Logger = LogManager.getLogger(ApiExceptionHandler::class.java)
 
     @ExceptionHandler(Exception::class)
-    fun handleException(exception: Exception) : ResponseEntity<ApiResponse<*>> {
-        val err = ApiError(exception.message ?: "Unknown error", HttpStatus.INTERNAL_SERVER_ERROR.value())
+    fun handleException(exception: Exception) : ResponseEntity<*> {
         log.error("Internal server error", exception)
         return ResponseEntity
             .internalServerError()
-            .body(ApiResponse.error(err))
+            .body(exception.message)
     }
 
 }
