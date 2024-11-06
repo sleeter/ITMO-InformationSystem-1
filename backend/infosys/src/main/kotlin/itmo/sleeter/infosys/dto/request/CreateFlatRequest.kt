@@ -3,10 +3,11 @@ package itmo.sleeter.infosys.dto.request
 import com.fasterxml.jackson.annotation.JsonProperty
 import jakarta.validation.constraints.Max
 import jakarta.validation.constraints.Min
+import jakarta.validation.constraints.NotEmpty
 import org.jetbrains.annotations.NotNull
 
 data class CreateFlatRequest(
-    @NotNull
+    @NotEmpty
     val name: String,
     @Min(1) @Max(724)
     val area: Double,
