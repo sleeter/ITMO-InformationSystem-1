@@ -26,7 +26,7 @@ class User : UserDetails {
     @Size(max = 100)
     @NotNull
     @Column(name = "password", nullable = false, length = 100)
-    var password: String? = null
+    private var password: String? = null
 
     @Enumerated(EnumType.STRING)
     @NotNull
@@ -45,6 +45,9 @@ class User : UserDetails {
 
     override fun getPassword(): String? {
         return password
+    }
+    fun setPassword(password: String) {
+        this.password = password
     }
 
     override fun getUsername(): String? {

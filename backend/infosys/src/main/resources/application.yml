@@ -2,7 +2,7 @@ spring:
   application:
     name: infosys
   datasource:
-    url: jdbc:postgresql://postgresql:5432/infosys
+    url: jdbc:postgresql://localhost:5432/infosys
     username: admin
     password: password
     driver-class-name: org.postgresql.Driver
@@ -12,4 +12,4 @@ spring:
 
 jwt:
   secret: 3RH7aHFDcWmpvtvAUhssAPSWheh87wWtu52HQvdlkDch7JkGrnKVsh9FJknroEC2
-  exp: 10_080 # week (set in minutes)
+  exp: 86_400 # 60 * 60 * 24 - day

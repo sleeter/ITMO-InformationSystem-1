@@ -8,7 +8,7 @@ import itmo.sleeter.infosys.dto.response.ViewResponse
 import itmo.sleeter.infosys.enumeration.Furnish
 import itmo.sleeter.infosys.enumeration.Transport
 import itmo.sleeter.infosys.enumeration.View
-import itmo.sleeter.infosys.exception.FlatNotFoundException
+import itmo.sleeter.infosys.exception.EntityNotFoundException
 import itmo.sleeter.infosys.mapper.FlatMapper
 import itmo.sleeter.infosys.repository.FlatRepository
 import org.springframework.stereotype.Service
@@ -26,7 +26,7 @@ class FlatService(
         val flat = flatRepository
             .findFlatById(id)
             .orElseThrow {
-                FlatNotFoundException("Flat with id=$id not found")
+                EntityNotFoundException("Flat with id=$id not found")
             }
         return flatMapper.flatToFlatResponse(
                 flat,

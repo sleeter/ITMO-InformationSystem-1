@@ -2,7 +2,7 @@ package itmo.sleeter.infosys.service
 
 import itmo.sleeter.infosys.dto.request.CreateHouseRequest
 import itmo.sleeter.infosys.dto.response.HouseResponse
-import itmo.sleeter.infosys.exception.HouseNotFoundException
+import itmo.sleeter.infosys.exception.EntityNotFoundException
 import itmo.sleeter.infosys.mapper.HouseMapper
 import itmo.sleeter.infosys.model.House
 import itmo.sleeter.infosys.repository.FlatRepository
@@ -21,7 +21,7 @@ class HouseService(
         val house = houseRepository
             .findHouseById(id)
             .orElseThrow {
-                HouseNotFoundException("House with id=$id not found")
+                EntityNotFoundException("House with id=$id not found")
             }
         return house
     }
