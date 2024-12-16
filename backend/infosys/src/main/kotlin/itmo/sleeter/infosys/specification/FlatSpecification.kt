@@ -11,22 +11,18 @@ class FlatSpecification(private val filter: FlatFilter) {
         return Specification { root, query, criteriaBuilder ->
             val predicates = mutableListOf<Predicate>()
 
-            // Фильтрация по имени
             filter.name?.let {
                 predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get<String>("name")), "%${it.toLowerCase()}%"))
             }
 
-            // Фильтрация по цене
             filter.price?.let {
                 predicates.add(criteriaBuilder.equal(root.get<Double>("price"), it))
             }
 
-            // Фильтрация по площади
             filter.area?.let {
                 predicates.add(criteriaBuilder.equal(root.get<Double>("area"), it))
             }
 
-            // Фильтрация по балкону
             filter.balcony?.let {
                 predicates.add(criteriaBuilder.equal(root.get<Boolean>("balcony"), it))
             }
