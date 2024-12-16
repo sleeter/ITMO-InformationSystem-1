@@ -1,6 +1,7 @@
 package itmo.sleeter.infosys.controller
 
 import itmo.sleeter.infosys.dto.request.CreateFlatRequest
+import itmo.sleeter.infosys.dto.request.FlatFilter
 import itmo.sleeter.infosys.dto.response.FlatResponse
 import itmo.sleeter.infosys.dto.response.FurnishResponse
 import itmo.sleeter.infosys.dto.response.TransportResponse
@@ -29,12 +30,17 @@ class FlatController(private val flatService: FlatService) {
     fun getFlats(
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "10") size: Int,
-        @RequestParam(defaultValue = "id") sortBy: String,
-        @RequestParam(defaultValue = "asc") sortOrder: String
+        @RequestParam(name = "sort_by", defaultValue = "id") sortBy: String,
+        @RequestParam(name = "sort_order", defaultValue = "asc") sortOrder: String,
+        @RequestParam(name = "time_to_metro_on_foot", required = false) timeToMetroOnFoot: Double?,
+        @RequestParam(name = "number_of_rooms", required = false) numberOfRooms: Long?,
+        flatFilter: FlatFilter
     ) : ResponseEntity<Page<FlatResponse>> {
+        flatFilter.numberOfRooms = numberOfRooms
+        flatFilter.timeToMetroOnFoot = timeToMetroOnFoot
         val sortDirection = if (sortOrder == "desc") Sort.Direction.DESC else Sort.Direction.ASC
         val pageable: Pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortBy))
-        val flats = flatService.getFlats(pageable)
+        val flats = flatService.getFlats(pageable, flatFilter)
         return ResponseEntity.ok(flats)
     }
 

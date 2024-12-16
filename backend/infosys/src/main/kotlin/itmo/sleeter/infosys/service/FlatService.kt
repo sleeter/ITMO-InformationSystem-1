@@ -1,6 +1,7 @@
 package itmo.sleeter.infosys.service
 
 import itmo.sleeter.infosys.dto.request.CreateFlatRequest
+import itmo.sleeter.infosys.dto.request.FlatFilter
 import itmo.sleeter.infosys.dto.response.FlatResponse
 import itmo.sleeter.infosys.dto.response.FurnishResponse
 import itmo.sleeter.infosys.dto.response.TransportResponse
@@ -11,6 +12,7 @@ import itmo.sleeter.infosys.enumeration.View
 import itmo.sleeter.infosys.exception.EntityNotFoundException
 import itmo.sleeter.infosys.mapper.FlatMapper
 import itmo.sleeter.infosys.repository.FlatRepository
+import itmo.sleeter.infosys.specification.FlatSpecification
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
@@ -41,8 +43,9 @@ class FlatService(
             )
     }
 
-    fun getFlats(pageable: Pageable): Page<FlatResponse> {
-        val page = flatRepository.findAll(pageable)
+    fun getFlats(pageable: Pageable, filter: FlatFilter): Page<FlatResponse> {
+        val specification = FlatSpecification(filter).toSpecification()
+        val page = flatRepository.findAll(specification, pageable)
         return PageImpl(
             page.content.map {
                     flat -> flatMapper.flatToFlatResponse(
