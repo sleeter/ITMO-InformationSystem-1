@@ -30,6 +30,9 @@ interface FlatMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "name", source = "createFlatRequest.name")
     @Mapping(target = "house", source = "house")
+    @Mapping(target = "updatedAt", source = "updatedAt")
+    @Mapping(target = "userCreate", source = "userCreate")
+    @Mapping(target = "userUpdate", source = "userUpdate")
     fun createFlatRequestToFlat(
         createFlatRequest: CreateFlatRequest,
         coordinates: Coordinate,

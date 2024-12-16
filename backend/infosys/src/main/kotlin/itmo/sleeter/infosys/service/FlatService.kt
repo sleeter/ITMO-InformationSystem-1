@@ -11,6 +11,9 @@ import itmo.sleeter.infosys.enumeration.View
 import itmo.sleeter.infosys.exception.EntityNotFoundException
 import itmo.sleeter.infosys.mapper.FlatMapper
 import itmo.sleeter.infosys.repository.FlatRepository
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import java.time.Instant
 
@@ -38,13 +41,20 @@ class FlatService(
             )
     }
 
-    fun getFlats() : List<FlatResponse> = flatRepository.findAll().map {
-        flat -> flatMapper.flatToFlatResponse(
-            flat,
-            coordinateService.coordinateToCoordinateResponse(flat.coordinates),
-            houseService.houseToHouseResponse(flat.house),
-            userService.userToUserResponse(flat.userCreate),
-            userService.userToUserResponse(flat.userUpdate)
+    fun getFlats(pageable: Pageable): Page<FlatResponse> {
+        val page = flatRepository.findAll(pageable)
+        return PageImpl(
+            page.content.map {
+                    flat -> flatMapper.flatToFlatResponse(
+                flat,
+                coordinateService.coordinateToCoordinateResponse(flat.coordinates),
+                houseService.houseToHouseResponse(flat.house),
+                userService.userToUserResponse(flat.userCreate),
+                userService.userToUserResponse(flat.userUpdate)
+            )
+            },
+            pageable,
+            page.totalElements
         )
     }
 

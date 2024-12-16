@@ -9,15 +9,13 @@ import itmo.sleeter.infosys.service.FlatService
 import jakarta.transaction.Transactional
 import jakarta.validation.Valid
 import jakarta.validation.constraints.Min
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
 import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/flat")
@@ -28,8 +26,17 @@ class FlatController(private val flatService: FlatService) {
         ResponseEntity.ok(flatService.getFlatById(id))
 
     @GetMapping
-    fun getFlats() : ResponseEntity<List<FlatResponse>> =
-        ResponseEntity.ok(flatService.getFlats())
+    fun getFlats(
+        @RequestParam(defaultValue = "0") page: Int,
+        @RequestParam(defaultValue = "10") size: Int,
+        @RequestParam(defaultValue = "id") sortBy: String,
+        @RequestParam(defaultValue = "asc") sortOrder: String
+    ) : ResponseEntity<Page<FlatResponse>> {
+        val sortDirection = if (sortOrder == "desc") Sort.Direction.DESC else Sort.Direction.ASC
+        val pageable: Pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortBy))
+        val flats = flatService.getFlats(pageable)
+        return ResponseEntity.ok(flats)
+    }
 
     @PostMapping
     @Transactional
