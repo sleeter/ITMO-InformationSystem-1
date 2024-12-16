@@ -38,7 +38,7 @@ class UserService(
         val user = User()
         user.login = req.login
         user.setPassword(passwordEncoder.encode(req.password))
-        user.role = Role.ROLE_USER
+        user.role = if (req.role == "user") Role.ROLE_USER else Role.ROLE_ADMIN
         createUser(user)
         val jwt = jwtService.generateToken(user)
         return TokenResponse(jwt)
