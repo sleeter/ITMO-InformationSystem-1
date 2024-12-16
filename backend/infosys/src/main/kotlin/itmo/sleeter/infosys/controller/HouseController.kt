@@ -7,6 +7,7 @@ import jakarta.validation.Valid
 import jakarta.validation.constraints.Min
 import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -20,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController
 class HouseController(private val houseService: HouseService) {
     @GetMapping("/{id}")
     fun getHouse(@PathVariable @Min(0) id: Long) : ResponseEntity<HouseResponse> =
-        ResponseEntity.ok(houseService.getHouseResponse(id))
+        ResponseEntity.ok(houseService.getHouseById(id))
 
     @GetMapping
     fun getHouses() : ResponseEntity<List<HouseResponse>> =
@@ -34,6 +35,7 @@ class HouseController(private val houseService: HouseService) {
         return ResponseEntity.ok().headers(headers).body(house)
     }
     @DeleteMapping("/{id}")
+    @Transactional
     fun deleteHouse(@PathVariable @Min(0) id: Long) : ResponseEntity<Void> {
         houseService.deleteHouse(id)
         return ResponseEntity.ok(null)

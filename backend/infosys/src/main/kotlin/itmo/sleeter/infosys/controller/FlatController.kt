@@ -5,9 +5,8 @@ import itmo.sleeter.infosys.dto.response.FlatResponse
 import itmo.sleeter.infosys.dto.response.FurnishResponse
 import itmo.sleeter.infosys.dto.response.TransportResponse
 import itmo.sleeter.infosys.dto.response.ViewResponse
-import itmo.sleeter.infosys.dto.response.api.ApiResponse
-import itmo.sleeter.infosys.model.Flat
 import itmo.sleeter.infosys.service.FlatService
+import jakarta.transaction.Transactional
 import jakarta.validation.Valid
 import jakarta.validation.constraints.Min
 import org.springframework.http.HttpHeaders
@@ -33,6 +32,7 @@ class FlatController(private val flatService: FlatService) {
         ResponseEntity.ok(flatService.getFlats())
 
     @PostMapping
+    @Transactional
     fun createFlat(@RequestBody @Valid req: CreateFlatRequest) : ResponseEntity<FlatResponse> {
         val flat = flatService.createFlat(req)
         val headers = HttpHeaders()
@@ -41,6 +41,7 @@ class FlatController(private val flatService: FlatService) {
     }
 
     @DeleteMapping("/{id}")
+    @Transactional
     fun deleteFlat(@PathVariable @Min(0) id: Long) : ResponseEntity<Void> {
         flatService.deleteFlatById(id)
         return ResponseEntity.ok().body(null)

@@ -8,6 +8,7 @@ import itmo.sleeter.infosys.model.House
 import itmo.sleeter.infosys.repository.FlatRepository
 import itmo.sleeter.infosys.repository.HouseRepository
 import org.springframework.stereotype.Service
+import java.time.Instant
 
 @Service
 class HouseService(
@@ -17,6 +18,7 @@ class HouseService(
     private val flatRepository: FlatRepository
 ) {
     fun houseToHouseResponse(house: House?) : HouseResponse = houseMapper.houseToHouseResponse(house)
+
     fun getHouse(id: Long) : House {
         val house = houseRepository
             .findHouseById(id)
@@ -25,13 +27,23 @@ class HouseService(
             }
         return house
     }
-    fun getHouseResponse(id: Long) : HouseResponse = houseToHouseResponse(getHouse(id))
-    fun getHouses() : List<HouseResponse> = houseRepository.findAll().map { h -> houseMapper.houseToHouseResponse(h) }
-    fun createHouse(req: CreateHouseRequest) : HouseResponse {
-        val user = userService
-            .getUser(req.userId)
-        return houseMapper.houseToHouseResponse(houseRepository.save(houseMapper.createHouseRequestToHouse(req, user, user)))
+
+    fun getHouseById(id: Long) : HouseResponse {
+        val house = houseRepository
+            .findHouseById(id)
+            .orElseThrow {
+                EntityNotFoundException("House with id=$id not found")
+            }
+        return houseMapper.houseToHouseResponse(house)
     }
+
+    fun getHouses() : List<HouseResponse> = houseRepository.findAll().map { h -> houseMapper.houseToHouseResponse(h) }
+
+    fun createHouse(req: CreateHouseRequest) : HouseResponse {
+        val user = userService.getUser(req.userId)
+        return houseMapper.houseToHouseResponse(houseRepository.save(houseMapper.createHouseRequestToHouse(req, user, user, Instant.now(), Instant.now())))
+    }
+
     fun deleteHouse(id: Long) {
         flatRepository.deleteAllByHouseId(id)
         houseRepository.deleteById(id)

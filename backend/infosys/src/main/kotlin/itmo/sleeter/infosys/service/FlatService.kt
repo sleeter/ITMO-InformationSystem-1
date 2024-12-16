@@ -12,6 +12,7 @@ import itmo.sleeter.infosys.exception.EntityNotFoundException
 import itmo.sleeter.infosys.mapper.FlatMapper
 import itmo.sleeter.infosys.repository.FlatRepository
 import org.springframework.stereotype.Service
+import java.time.Instant
 
 @Service
 class FlatService(
@@ -36,6 +37,7 @@ class FlatService(
                 userService.userToUserResponse(flat.userUpdate)
             )
     }
+
     fun getFlats() : List<FlatResponse> = flatRepository.findAll().map {
         flat -> flatMapper.flatToFlatResponse(
             flat,
@@ -45,9 +47,7 @@ class FlatService(
             userService.userToUserResponse(flat.userUpdate)
         )
     }
-    fun deleteAllByHouseId(houseId: Long) {
-        flatRepository.deleteAllByHouseId(houseId)
-    }
+
     fun createFlat(req: CreateFlatRequest) : FlatResponse {
         val coordinate = coordinateService.findCoordinateByXAndY(req.coordinate.x, req.coordinate.y)
         val house = houseService.getHouse(req.houseId)
@@ -58,7 +58,9 @@ class FlatService(
                 coordinate,
                 house,
                 user,
-                user
+                user,
+                Instant.now(),
+                Instant.now()
             ))
         return flatMapper.flatToFlatResponse(
             flat,
@@ -68,11 +70,15 @@ class FlatService(
             userService.userToUserResponse(user)
         )
     }
+
     fun deleteFlatById(id: Long) {
         flatRepository.deleteById(id)
     }
+
     fun getFurnish() : FurnishResponse = FurnishResponse(Furnish.entries.map { f -> f.name })
+
     fun getTransport() : TransportResponse = TransportResponse(Transport.entries.map { t -> t.name })
+
     fun getView() : ViewResponse = ViewResponse(View.entries.map { v -> v.name })
 }
 

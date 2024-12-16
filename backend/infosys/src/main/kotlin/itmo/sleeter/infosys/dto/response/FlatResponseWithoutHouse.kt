@@ -1,9 +1,8 @@
 package itmo.sleeter.infosys.dto.response
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import java.time.Instant
 
-data class FlatResponse(
+data class FlatResponseWithoutHouse(
     val id: Long,
     val name: String,
     val area: Double,
@@ -17,13 +16,4 @@ data class FlatResponse(
     val view: String,
     val transport: String,
     val coordinates: CoordinateResponse,
-    val house: HouseResponseWithoutFlats,
-    @JsonProperty("creation_date")
-    val creationDate: Instant,
-    @JsonProperty("updated_at")
-    val updatedAt: Instant,
-    @JsonProperty("user_create")
-    val userCreate: UserResponse,
-    @JsonProperty("user_update")
-    val userUpdate: UserResponse
 )

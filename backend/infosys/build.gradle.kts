@@ -1,9 +1,9 @@
 plugins {
-	kotlin("jvm") version "1.9.25"
-	kotlin("plugin.spring") version "1.9.25"
+	kotlin("jvm") version "2.0.0"
+	kotlin("plugin.spring") version "2.0.0"
 	id("org.springframework.boot") version "3.3.5"
 	id("io.spring.dependency-management") version "1.1.6"
-	kotlin("plugin.jpa") version "1.9.25"
+	kotlin("plugin.jpa") version "2.0.0"
 	kotlin("kapt") version "1.9.10"
 }
 
@@ -36,9 +36,9 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.liquibase:liquibase-core")
 	implementation("org.postgresql:postgresql:42.7.4")
-	implementation("io.jsonwebtoken:jjwt-api:0.11.5")
+	implementation("io.jsonwebtoken:jjwt-api:0.12.3")
 	implementation("io.jsonwebtoken:jjwt-impl:0.12.3")
-	runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.1")
+	implementation("io.jsonwebtoken:jjwt-jackson:0.12.3")
 	implementation("org.mapstruct:mapstruct:1.6.0")
 	kapt("org.mapstruct:mapstruct-processor:1.6.0")
 	compileOnly("org.projectlombok:lombok")

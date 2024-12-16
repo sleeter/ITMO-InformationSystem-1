@@ -3,7 +3,7 @@ package itmo.sleeter.infosys.dto.response
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.time.Instant
 
-data class HouseResponse(
+data class HouseResponseWithoutFlats(
     val id : Long,
     @JsonProperty("number_of_lifts")
     val numberOfLifts : Long,
@@ -16,5 +16,4 @@ data class HouseResponse(
     val userCreate : UserResponse,
     @JsonProperty("user_update")
     val userUpdate : UserResponse,
-    val flats: Set<FlatResponseWithoutHouse>
 )

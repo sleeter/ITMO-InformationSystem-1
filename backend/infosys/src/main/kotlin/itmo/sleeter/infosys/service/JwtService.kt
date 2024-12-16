@@ -10,7 +10,7 @@ import itmo.sleeter.infosys.model.User
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
 import java.security.Key
-import java.util.Date
+import java.util.*
 
 
 @Service
@@ -50,7 +50,7 @@ class JwtService(val props: JwtProperties) {
         return extractClaim(token, Claims::getExpiration)
     }
     private fun extractAllClaims(token: String): Claims {
-        return Jwts.parser().setSigningKey(getSigningKey()).parseClaimsJwt(token).body
+        return Jwts.parser().setSigningKey(getSigningKey()).build().parseClaimsJws(token).body;
     }
     private fun getSigningKey(): Key {
         val keyBytes: ByteArray = Decoders.BASE64.decode(props.secret)
