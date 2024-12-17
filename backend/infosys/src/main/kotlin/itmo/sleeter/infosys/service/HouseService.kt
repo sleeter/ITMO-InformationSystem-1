@@ -1,12 +1,18 @@
 package itmo.sleeter.infosys.service
 
 import itmo.sleeter.infosys.dto.request.CreateHouseRequest
+import itmo.sleeter.infosys.dto.request.HouseFilter
 import itmo.sleeter.infosys.dto.response.HouseResponse
 import itmo.sleeter.infosys.exception.EntityNotFoundException
 import itmo.sleeter.infosys.mapper.HouseMapper
 import itmo.sleeter.infosys.model.House
 import itmo.sleeter.infosys.repository.FlatRepository
 import itmo.sleeter.infosys.repository.HouseRepository
+import itmo.sleeter.infosys.specification.FlatSpecification
+import itmo.sleeter.infosys.specification.HouseSpecification
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import java.time.Instant
 
@@ -37,7 +43,17 @@ class HouseService(
         return houseMapper.houseToHouseResponse(house)
     }
 
-    fun getHouses() : List<HouseResponse> = houseRepository.findAll().map { h -> houseMapper.houseToHouseResponse(h) }
+    fun getHouses(pageable: Pageable, filter: HouseFilter) : Page<HouseResponse> {
+        val specification = HouseSpecification(filter).toSpecification()
+        val page = houseRepository.findAll(specification, pageable)
+        return PageImpl(
+            page.content.map {
+                    h -> houseMapper.houseToHouseResponse(h)
+            },
+            pageable,
+            page.totalElements
+        )
+    }
 
     fun createHouse(req: CreateHouseRequest) : HouseResponse {
         val user = userService.getUser(req.userId)
