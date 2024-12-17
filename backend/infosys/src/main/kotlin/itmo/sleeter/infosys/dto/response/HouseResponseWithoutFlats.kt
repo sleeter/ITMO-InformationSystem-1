@@ -5,6 +5,7 @@ import java.time.Instant
 
 data class HouseResponseWithoutFlats(
     val id : Long,
+    val name : String,
     @JsonProperty("number_of_lifts")
     val numberOfLifts : Long,
     val year : Int,

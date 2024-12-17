@@ -20,6 +20,7 @@ interface FlatMapper {
     @Mapping(target = "userUpdate", source = "userUpdate")
     @Mapping(target = "house", source = "house")
     @Mapping(target = "isMine", source = "isMine")
+    @Mapping(target = "name", source = "flat.name")
     fun flatToFlatResponse(
         flat: Flat,
         coordinate: CoordinateResponse,
