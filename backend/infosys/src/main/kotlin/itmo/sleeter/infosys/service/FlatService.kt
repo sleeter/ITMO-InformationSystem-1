@@ -34,18 +34,21 @@ class FlatService(
             .orElseThrow {
                 EntityNotFoundException("Flat with id=$id not found")
             }
+        val user = userService.getCurrentUser()
         return flatMapper.flatToFlatResponse(
                 flat,
                 coordinateService.coordinateToCoordinateResponse(flat.coordinates),
                 houseService.houseToHouseResponse(flat.house),
                 userService.userToUserResponse(flat.userCreate),
-                userService.userToUserResponse(flat.userUpdate)
+                userService.userToUserResponse(flat.userUpdate),
+            flat.userCreate?.id == user.id
             )
     }
 
     fun getFlats(pageable: Pageable, filter: FlatFilter): Page<FlatResponse> {
         val specification = FlatSpecification(filter).toSpecification()
         val page = flatRepository.findAll(specification, pageable)
+        val user = userService.getCurrentUser()
         return PageImpl(
             page.content.map {
                     flat -> flatMapper.flatToFlatResponse(
@@ -53,7 +56,8 @@ class FlatService(
                 coordinateService.coordinateToCoordinateResponse(flat.coordinates),
                 houseService.houseToHouseResponse(flat.house),
                 userService.userToUserResponse(flat.userCreate),
-                userService.userToUserResponse(flat.userUpdate)
+                userService.userToUserResponse(flat.userUpdate),
+                        flat.userCreate?.id == user.id
             )
             },
             pageable,
@@ -80,7 +84,8 @@ class FlatService(
             coordinateService.coordinateToCoordinateResponse(coordinate),
             houseService.houseToHouseResponse(house),
             userService.userToUserResponse(user),
-            userService.userToUserResponse(user)
+            userService.userToUserResponse(user),
+            true
         )
     }
 

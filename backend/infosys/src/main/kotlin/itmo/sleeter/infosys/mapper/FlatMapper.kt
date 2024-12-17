@@ -19,12 +19,14 @@ interface FlatMapper {
     @Mapping(target = "userCreate", source = "userCreate")
     @Mapping(target = "userUpdate", source = "userUpdate")
     @Mapping(target = "house", source = "house")
+    @Mapping(target = "isMine", source = "isMine")
     fun flatToFlatResponse(
         flat: Flat,
         coordinate: CoordinateResponse,
         house: HouseResponse,
         userCreate: UserResponse,
-        userUpdate: UserResponse
+        userUpdate: UserResponse,
+        isMine : Boolean
     ) : FlatResponse
 
     @Mapping(target = "id", ignore = true)

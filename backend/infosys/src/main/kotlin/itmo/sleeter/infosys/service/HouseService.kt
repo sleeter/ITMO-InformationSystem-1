@@ -8,7 +8,6 @@ import itmo.sleeter.infosys.mapper.HouseMapper
 import itmo.sleeter.infosys.model.House
 import itmo.sleeter.infosys.repository.FlatRepository
 import itmo.sleeter.infosys.repository.HouseRepository
-import itmo.sleeter.infosys.specification.FlatSpecification
 import itmo.sleeter.infosys.specification.HouseSpecification
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
@@ -21,9 +20,9 @@ class HouseService(
     private val houseRepository: HouseRepository,
     private val houseMapper: HouseMapper,
     private val userService: UserService,
-    private val flatRepository: FlatRepository
+    private val flatRepository: FlatRepository,
 ) {
-    fun houseToHouseResponse(house: House?) : HouseResponse = houseMapper.houseToHouseResponse(house)
+    fun houseToHouseResponse(house: House?) : HouseResponse = houseMapper.houseToHouseResponse(house, false)
 
     fun getHouse(id: Long) : House {
         val house = houseRepository
@@ -40,15 +39,19 @@ class HouseService(
             .orElseThrow {
                 EntityNotFoundException("House with id=$id not found")
             }
-        return houseMapper.houseToHouseResponse(house)
+        val user = userService.getCurrentUser()
+        val isMine = user.id == id
+        return houseMapper.houseToHouseResponse(house, isMine)
     }
 
     fun getHouses(pageable: Pageable, filter: HouseFilter) : Page<HouseResponse> {
         val specification = HouseSpecification(filter).toSpecification()
         val page = houseRepository.findAll(specification, pageable)
+        val user = userService.getCurrentUser()
         return PageImpl(
             page.content.map {
-                    h -> houseMapper.houseToHouseResponse(h)
+                    h ->
+                houseMapper.houseToHouseResponse(h, h.userCreate?.id == user.id)
             },
             pageable,
             page.totalElements
@@ -57,7 +60,7 @@ class HouseService(
 
     fun createHouse(req: CreateHouseRequest) : HouseResponse {
         val user = userService.getUser(req.userId)
-        return houseMapper.houseToHouseResponse(houseRepository.save(houseMapper.createHouseRequestToHouse(req, user, user, Instant.now(), Instant.now())))
+        return houseMapper.houseToHouseResponse(houseRepository.save(houseMapper.createHouseRequestToHouse(req, user, user, Instant.now(), Instant.now())), true)
     }
 
     fun deleteHouse(id: Long) {

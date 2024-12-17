@@ -13,9 +13,11 @@ import java.time.Instant
 @Mapper
 @Component
 interface HouseMapper {
-    fun houseToHouseResponse(house: House?) : HouseResponse
+    @Mapping(target = "isMine", source = "isMine")
+    fun houseToHouseResponse(house: House?, isMine : Boolean) : HouseResponse
 
     @Mapping(target = "flats", source = "flats")
+    @Mapping(target = "isMine", ignore = true)
     fun houseToHouseResponseWithoutFlats(house: House?, flats: Set<FlatResponse>?) : HouseResponse
 
     @Mapping(target = "id", ignore = true)

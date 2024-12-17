@@ -25,5 +25,7 @@ data class FlatResponse(
     @JsonProperty("user_create")
     val userCreate: UserResponse,
     @JsonProperty("user_update")
-    val userUpdate: UserResponse
+    val userUpdate: UserResponse,
+    @JsonProperty("is_mine")
+    val isMine: Boolean
 )

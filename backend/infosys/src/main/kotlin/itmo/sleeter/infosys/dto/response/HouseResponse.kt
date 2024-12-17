@@ -16,5 +16,7 @@ data class HouseResponse(
     val userCreate : UserResponse,
     @JsonProperty("user_update")
     val userUpdate : UserResponse,
+    @JsonProperty("is_mine")
+    val isMine : Boolean,
     val flats: Set<FlatResponseWithoutHouse>
 )
