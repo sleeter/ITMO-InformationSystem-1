@@ -2,6 +2,7 @@ package itmo.sleeter.infosys.controller
 
 import itmo.sleeter.infosys.dto.request.CreateFlatRequest
 import itmo.sleeter.infosys.dto.request.FlatFilter
+import itmo.sleeter.infosys.dto.request.UpdateFlatRequest
 import itmo.sleeter.infosys.dto.response.FlatResponse
 import itmo.sleeter.infosys.dto.response.FurnishResponse
 import itmo.sleeter.infosys.dto.response.TransportResponse
@@ -57,6 +58,12 @@ class FlatController(private val flatService: FlatService) {
     @Transactional
     fun deleteFlat(@PathVariable @Min(0) id: Long) : ResponseEntity<Void> {
         flatService.deleteFlatById(id)
+        return ResponseEntity.ok().body(null)
+    }
+    @PutMapping("/{id}")
+    @Transactional
+    fun updateFlat(@PathVariable id: Long, @RequestBody @Valid req: UpdateFlatRequest) : ResponseEntity<Void> {
+        flatService.updateFlat(id, req)
         return ResponseEntity.ok().body(null)
     }
     @GetMapping("/furnish")

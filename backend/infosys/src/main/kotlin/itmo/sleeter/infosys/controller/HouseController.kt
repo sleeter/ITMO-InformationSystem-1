@@ -2,6 +2,8 @@ package itmo.sleeter.infosys.controller
 
 import itmo.sleeter.infosys.dto.request.CreateHouseRequest
 import itmo.sleeter.infosys.dto.request.HouseFilter
+import itmo.sleeter.infosys.dto.request.UpdateFlatRequest
+import itmo.sleeter.infosys.dto.request.UpdateHouseRequest
 import itmo.sleeter.infosys.dto.response.HouseResponse
 import itmo.sleeter.infosys.service.HouseService
 import jakarta.validation.Valid
@@ -49,5 +51,11 @@ class HouseController(private val houseService: HouseService) {
     fun deleteHouse(@PathVariable @Min(0) id: Long) : ResponseEntity<Void> {
         houseService.deleteHouse(id)
         return ResponseEntity.ok(null)
+    }
+    @PutMapping("/{id}")
+    @Transactional
+    fun updateFlat(@PathVariable id: Long, @RequestBody @Valid req: UpdateHouseRequest) : ResponseEntity<Void> {
+        houseService.updateHouse(id, req)
+        return ResponseEntity.ok().body(null)
     }
 }

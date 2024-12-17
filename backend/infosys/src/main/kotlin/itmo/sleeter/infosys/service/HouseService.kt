@@ -2,6 +2,8 @@ package itmo.sleeter.infosys.service
 
 import itmo.sleeter.infosys.dto.request.CreateHouseRequest
 import itmo.sleeter.infosys.dto.request.HouseFilter
+import itmo.sleeter.infosys.dto.request.UpdateFlatRequest
+import itmo.sleeter.infosys.dto.request.UpdateHouseRequest
 import itmo.sleeter.infosys.dto.response.HouseResponse
 import itmo.sleeter.infosys.exception.EntityNotFoundException
 import itmo.sleeter.infosys.mapper.HouseMapper
@@ -66,5 +68,14 @@ class HouseService(
     fun deleteHouse(id: Long) {
         flatRepository.deleteAllByHouseId(id)
         houseRepository.deleteById(id)
+    }
+
+    fun updateHouse(id: Long, req: UpdateHouseRequest) {
+        val house = houseRepository.findHouseById(id).orElseThrow()
+        house.name = req.name
+        house.numberOfLifts = req.numberOfLifts
+        house.year = req.year
+        house.updatedAt = Instant.now()
+        houseRepository.save(house)
     }
 }

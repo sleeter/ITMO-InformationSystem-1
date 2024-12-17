@@ -2,6 +2,7 @@ package itmo.sleeter.infosys.service
 
 import itmo.sleeter.infosys.dto.request.CreateFlatRequest
 import itmo.sleeter.infosys.dto.request.FlatFilter
+import itmo.sleeter.infosys.dto.request.UpdateFlatRequest
 import itmo.sleeter.infosys.dto.response.FlatResponse
 import itmo.sleeter.infosys.dto.response.FurnishResponse
 import itmo.sleeter.infosys.dto.response.TransportResponse
@@ -91,6 +92,23 @@ class FlatService(
 
     fun deleteFlatById(id: Long) {
         flatRepository.deleteById(id)
+    }
+    fun updateFlat(id: Long, req: UpdateFlatRequest) {
+        val flat = flatRepository.findFlatById(id).orElseThrow()
+        flat.name = req.name
+        flat.coordinates?.x = req.coordinate.x
+        flat.coordinates?.y = req.coordinate.y
+        flat.area = req.area
+        flat.price = req.price
+        flat.balcony = req.balcony
+        flat.timeToMetroOnFoot = req.timeToMetroOnFoot
+        flat.numberOfRooms = req.numberOfRooms
+        flat.furnish = req.furnish
+        flat.view = req.view
+        flat.transport = req.transport
+        flat.house = houseService.getHouse(req.houseId)
+        flat.updatedAt = Instant.now()
+        flatRepository.save(flat)
     }
 
     fun getFurnish() : FurnishResponse = FurnishResponse(Furnish.entries.map { f -> f.name })
