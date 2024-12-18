@@ -45,3 +45,9 @@ CREATE TABLE Flats (
                       user_update_id BIGINT REFERENCES Users(id)
 );
 
+CREATE TABLE Requests (
+                          id BIGSERIAL PRIMARY KEY,
+    user_id BIGINT NOT NULL REFERENCES Users(id),
+    admin_id BIGINT NOT NULL REFERENCES Users(id),
+    approved BOOLEAN NOT NULL
+);
