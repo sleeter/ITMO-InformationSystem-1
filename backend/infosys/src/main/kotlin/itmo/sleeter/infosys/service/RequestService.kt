@@ -23,8 +23,8 @@ class RequestService(
         requestRepository.save(request)
     }
     fun getAllRequests(): List<AdminRequestResponse> {
-        return requestRepository.findAll().map {
-            r -> AdminRequestResponse(r.id, r.admin?.login, r.user?.login)
+        return requestRepository.findAll().filter { r -> r.approved == false }.map {
+            r -> AdminRequestResponse(r.id, r.user?.login, r.admin?.login)
         }
     }
     fun approveRequest(id: Long) {

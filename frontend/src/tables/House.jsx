@@ -7,7 +7,6 @@ const HouseTable = () => {
     const [loading, setLoading] = useState(false);
     const [editingHouse, setEditingHouse] = useState(null); // Для хранения данных редактируемого автомобиля
     const [error, setError] = useState('');
-    // TODO: isMine
     // Функция для загрузки данных с бэкенда
     const fetchHouses = async (page) => {
         setLoading(true);

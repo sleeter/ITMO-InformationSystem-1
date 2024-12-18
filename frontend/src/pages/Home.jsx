@@ -4,6 +4,7 @@ import HouseTable from "../tables/House.jsx";
 import FlatTable from "../tables/Flat.jsx";
 import HouseForm from "../inputs/House.jsx";
 import FlatForm from "../inputs/Flat.jsx";
+import AdminForm from "../inputs/Admin.jsx";
 
 function Home() {
     const location = useLocation();
@@ -63,10 +64,11 @@ function Home() {
                 <div>
                     <span>Welcome, {username}!</span>
                 </div>
-                <div>
-                    <button onClick={handleLogout}>Logout</button>
-                    {role !== "ROLE_ADMIN" ? <button onClick={handleBecomeAdmin}>Become an admin</button> :
-                        <button onClick={handleGoToAdminPanel}>Go to admin panel</button>}
+                <div className="header-buttons">
+                    {role === "ROLE_ADMIN" ? <AdminForm/> : null}
+                    {role === "ROLE_ADMIN" ? <button onClick={handleGoToAdminPanel}>Go to admin panel</button> : null}
+                    <button onClick={handleLogout} className="header-buttons-logout">Logout</button>
+
                 </div>
             </header>
 
