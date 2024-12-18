@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from 'react';
 
+const Furnish = { DESIGNER: 'DESIGNER', FINE: 'FINE', BAD: 'BAD', LITTLE: 'LITTLE' };
+const Transport = { FEW: 'FEW', LITTLE: 'LITTLE', NORMAL: 'NORMAL', ENOUGH: 'ENOUGH' };
+const View = { STREET: 'STREET', YARD: 'YARD', BAD: 'BAD', NORMAL: 'NORMAL' };
+
+
 const FlatTable = () => {
     const [flat, setFlat] = useState([]);
     const [currentPage, setCurrentPage] = useState(0);
@@ -258,6 +263,112 @@ const FlatTable = () => {
                                     value={editingFlat.name}
                                     onChange={(e) => setEditingFlat({...editingFlat, name: e.target.value})}
                                 />
+                            </label>
+                            <label>
+                                House ID:
+                                <input
+                                    type="number"
+                                    value={editingFlat.house.id}
+                                    onChange={(e) => setEditingFlat({...editingFlat, house_id: e.target.value})}
+                                />
+                            </label>
+                            <label>
+                                X:
+                                <input
+                                    type="number"
+                                    value={editingFlat.coordinates.x}
+                                    onChange={(e) => setEditingFlat({...editingFlat, x: e.target.value})}
+                                />
+                            </label>
+                            <label>
+                                Y:
+                                <input
+                                    type="number"
+                                    value={editingFlat.coordinates.y}
+                                    onChange={(e) => setEditingFlat({...editingFlat, y: e.target.value})}
+                                />
+                            </label>
+                            <label>
+                                Area:
+                                <input
+                                    type="number"
+                                    value={editingFlat.area}
+                                    onChange={(e) => setEditingFlat({...editingFlat, area: e.target.value})}
+                                />
+                            </label>
+                            <label>
+                                Price:
+                                <input
+                                    type="number"
+                                    value={editingFlat.price}
+                                    onChange={(e) => setEditingFlat({...editingFlat, price: e.target.value})}
+                                />
+                            </label>
+                            <label>
+                                Balcony:
+                                <input
+                                    type="radio"
+                                    name="balcony"
+                                    value="true"
+                                    checked={editingFlat.balcony === true}
+                                    onChange={() => setEditingFlat({...editingFlat, balcony: true})}
+                                /> Yes
+                                <input
+                                    type="radio"
+                                    name="balcony"
+                                    value="false"
+                                    checked={editingFlat.balcony === false}
+                                    onChange={() => setEditingFlat({...editingFlat, balcony: false})}
+                                /> No
+                            </label>
+                            <label>
+                                Time to metro on foot:
+                                <input
+                                    type="number"
+                                    value={editingFlat.time_to_metro_on_foot}
+                                    onChange={(e) => setEditingFlat({
+                                        ...editingFlat,
+                                        time_to_metro_on_foot: e.target.value
+                                    })}
+                                />
+                            </label>
+                            <label>
+                                Number of rooms:
+                                <input
+                                    type="number"
+                                    value={editingFlat.number_of_rooms}
+                                    onChange={(e) => setEditingFlat({...editingFlat, number_of_rooms: e.target.value})}
+                                />
+                            </label>
+                            <label>
+                                Furnish:
+                                <select value={editingFlat.furnish}
+                                        onChange={(e) => setEditingFlat({...editingHuman, furnish: e.target.value})}>
+                                    <option value={Furnish.BAD}>BAD</option>
+                                    <option value={Furnish.FINE}>FINE</option>
+                                    <option value={Furnish.DESIGNER}>DESIGNER</option>
+                                    <option value={Furnish.LITTLE}>LITTLE</option>
+                                </select>
+                            </label>
+                            <label>
+                                View:
+                                <select value={editingFlat.view}
+                                        onChange={(e) => setEditingFlat({...editingHuman, view: e.target.value})}>
+                                    <option value={View.STREET}>STREET</option>
+                                    <option value={View.YARD}>YARD</option>
+                                    <option value={View.BAD}>BAD</option>
+                                    <option value={View.NORMAL}>NORMAL</option>
+                                </select>
+                            </label>
+                            <label>
+                                Transport:
+                                <select value={editingFlat.transport}
+                                        onChange={(e) => setEditingFlat({...editingHuman, transport: e.target.value})}>
+                                    <option value={Transport.FEW}>FEW</option>
+                                    <option value={Transport.LITTLE}>LITTLE</option>
+                                    <option value={Transport.NORMAL}>NORMAL</option>
+                                    <option value={Transport.ENOUGH}>ENOUGH</option>
+                                </select>
                             </label>
                             <br/>
                             {error && <p style={{color: 'red'}}>{error}</p>}

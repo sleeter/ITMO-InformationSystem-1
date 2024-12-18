@@ -204,6 +204,28 @@ const HouseTable = () => {
                                     onChange={(e) => setEditingHouse({...editingHouse, name: e.target.value})}
                                 />
                             </label>
+                            <label>
+                                Number of lifts:
+                                <input
+                                    type="number"
+                                    value={editingHouse.number_of_lifts}
+                                    onChange={(e) => setEditingHouse({
+                                        ...editingHouse,
+                                        number_of_lifts: e.target.value
+                                    })}
+                                />
+                            </label>
+                            <label>
+                                Year:
+                                <input
+                                    type="number"
+                                    value={editingHouse.year}
+                                    onChange={(e) => setEditingHouse({
+                                        ...editingHouse,
+                                        year: e.target.value
+                                    })}
+                                />
+                            </label>
                             <br/>
                             {error && <p style={{color: 'red'}}>{error}</p>}
                             <button type="button" onClick={handleEditSubmit}>
