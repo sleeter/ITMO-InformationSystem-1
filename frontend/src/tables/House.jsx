@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import SockJS from "sockjs-client";
+import {Stomp} from "@stomp/stompjs";
 
 const HouseTable = () => {
     const [house, setHouse] = useState([]);
@@ -26,7 +28,6 @@ const HouseTable = () => {
             }
 
             const data = await response.json();
-            // console.log(data)
             setHouse(data.content); // houses возвращаются в свойстве content
             setTotalPages(data.totalPages); // totalPages возвращаются в свойстве totalPages
         } catch (error) {
@@ -40,6 +41,24 @@ const HouseTable = () => {
     useEffect(() => {
         fetchHouses(currentPage);
     }, [currentPage]);
+
+    useEffect(() => {
+        connectWebSocket(currentPage)
+    }, [currentPage])
+    const jwtToken = localStorage.getItem('jwtToken');
+    function connectWebSocket(currentPage) {
+        const socket = new SockJS("http://localhost:8080/ws")
+        let stompClient = Stomp.over(socket)
+
+        stompClient.connect({
+            // Заголовки для подключения
+            Authorization: `Bearer ${jwtToken}`,  // Передаем Bearer токен
+        }, function (frame) {
+            stompClient.subscribe('/topic/app', data => {
+                fetchHouses(currentPage)
+            })
+        })
+    }
 
     // Функция для получения данных дома для редактирования
     const fetchHouseDetails = async (id) => {
@@ -167,10 +186,10 @@ const HouseTable = () => {
                             <td>{house.year}</td>
                             {house.is_mine ? <td>
                                 <button onClick={() => fetchHouseDetails(house.id)}>Edit</button>
-                            </td>: null}
+                            </td>: ""}
                             {house.is_mine ? <td>
                                 <button onClick={() => handleDelete(house.id)}>Delete</button>
-                            </td> : null}
+                            </td> : ""}
                         </tr>
                     ))}
                     </tbody>

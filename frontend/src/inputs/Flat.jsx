@@ -95,7 +95,6 @@ const FlatForm = () => {
                 throw new Error('Ошибка при отправке данных на сервер');
             }
 
-            alert('Данные успешно отправлены');
             setIsModalOpen(false); // Close the modal on success
         } catch (error) {
             alert(error.message);
@@ -224,10 +223,79 @@ const modalStyles = {
     container: {
         backgroundColor: 'white',
         padding: '20px',
-        borderRadius: '5px',
-        width: '300px',
+        borderRadius: '10px',
+        width: '500px',  // ширина контейнера
+        maxHeight: '80vh', // максимальная высота
+        overflowY: 'auto', // прокрутка, если форма слишком длинная
+        textAlign: 'left',
+        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', // тень для красоты
+        display: 'grid',
+        gridTemplateColumns: '1fr 1fr', // два столбца
+        gap: '15px', // расстояние между элементами
+    },
+    header: {
+        gridColumn: 'span 2', // заголовок на всю ширину
         textAlign: 'center',
+        color: '#333',
+        marginBottom: '20px',
+        fontSize: '18px',
+        fontWeight: 'bold',
+    },
+    label: {
+        display: 'block',
+        marginBottom: '8px',
+        fontWeight: 'bold',
+        color: '#555',
+    },
+    input: {
+        width: '100%',
+        padding: '8px',
+        marginBottom: '12px',
+        border: '1px solid #ddd',
+        borderRadius: '5px',
+        fontSize: '14px',
+        boxSizing: 'border-box',
+    },
+    select: {
+        width: '100%',
+        padding: '8px',
+        marginBottom: '12px',
+        border: '1px solid #ddd',
+        borderRadius: '5px',
+        fontSize: '14px',
+        boxSizing: 'border-box',
+    },
+    radioLabel: {
+        marginRight: '10px',
+    },
+    button: {
+        backgroundColor: '#007bff',
+        color: 'white',
+        padding: '8px 15px',
+        border: 'none',
+        borderRadius: '5px',
+        cursor: 'pointer',
+        fontSize: '16px',
+        marginRight: '10px',
+        transition: 'background-color 0.3s',
+    },
+    buttonHover: {
+        backgroundColor: '#0056b3',
+    },
+    error: {
+        color: '#ff0000',
+        fontSize: '14px',
+        marginTop: '-10px',
+        marginBottom: '15px',
+    },
+    closeButton: {
+        backgroundColor: '#dc3545',
+        color: 'white',
+    },
+    closeButtonHover: {
+        backgroundColor: '#c82333',
     },
 };
+
 
 export default FlatForm;

@@ -12,11 +12,13 @@ import itmo.sleeter.infosys.enumeration.Transport
 import itmo.sleeter.infosys.enumeration.View
 import itmo.sleeter.infosys.exception.EntityNotFoundException
 import itmo.sleeter.infosys.mapper.FlatMapper
+import itmo.sleeter.infosys.model.Flat
 import itmo.sleeter.infosys.repository.FlatRepository
 import itmo.sleeter.infosys.specification.FlatSpecification
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import java.time.Instant
 
@@ -116,6 +118,51 @@ class FlatService(
     fun getTransport() : TransportResponse = TransportResponse(Transport.entries.map { t -> t.name })
 
     fun getView() : ViewResponse = ViewResponse(View.entries.map { v -> v.name })
+
+    // Удалить квартиры по транспорту
+    fun deleteFlatsByTransport(transport: String) {
+        flatRepository.deleteFlatsByTransport(transport)
+    }
+
+    // Подсчитать квартиры с house_id, у которых цена меньше заданного
+    fun countFlatsByHouseIdLessThan(houseId: Long): Int {
+        return flatRepository.findAll().count { flat -> flat.id!! < houseId };
+    }
+
+
+    // Получить более дешёвую квартиру
+    fun getCheaperFlat(id1: Long, id2: Long): FlatResponse? {
+        var flat1 = flatRepository.findFlatById(id1).orElseThrow()
+        val flat2 = flatRepository.findFlatById(id2).orElseThrow()
+        if(flat1.price!! > flat2.price!!) {
+            flat1 = flat2
+        }
+        val user = userService.getCurrentUser()
+        return flat1?.let {
+            flatMapper.flatToFlatResponse(
+                it, coordinateService.coordinateToCoordinateResponse(flat1.coordinates),
+                houseService.houseToHouseResponse(flat1.house),
+                userService.userToUserResponse(flat1.userCreate),
+                userService.userToUserResponse(flat1.userUpdate),
+                flat1.userCreate?.id == user.id)
+        }
+    }
+
+    // Получить список квартир, отсортированных по времени до метро
+    fun getFlatsSortedByMetroTime(): List<FlatResponse> {
+        val flat = flatRepository.findAll().sortedBy { it.timeToMetroOnFoot }
+        val user = userService.getCurrentUser()
+        return flat.map {
+                flat -> flatMapper.flatToFlatResponse(
+            flat,
+            coordinateService.coordinateToCoordinateResponse(flat.coordinates),
+            houseService.houseToHouseResponse(flat.house),
+            userService.userToUserResponse(flat.userCreate),
+            userService.userToUserResponse(flat.userUpdate),
+            flat.userCreate?.id == user.id
+        )
+        }
+    }
 }
 
 

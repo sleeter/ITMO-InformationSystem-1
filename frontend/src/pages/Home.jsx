@@ -5,6 +5,7 @@ import FlatTable from "../tables/Flat.jsx";
 import HouseForm from "../inputs/House.jsx";
 import FlatForm from "../inputs/Flat.jsx";
 import AdminForm from "../inputs/Admin.jsx";
+import FlatOperations from "../operations/Flat.jsx";
 
 function Home() {
     const location = useLocation();
@@ -80,6 +81,8 @@ function Home() {
             <h2>Flats</h2>
             <FlatForm/>
             <FlatTable/>
+
+            <FlatOperations/>
 
         </div>
 

@@ -10,9 +10,16 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@stomp/stompjs": "^7.0.0",
+    "browser-crypto": "^2.1.0",
+    "event": "^1.0.0",
+    "random": "^5.1.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^7.0.2"
+    "react-router-dom": "^7.0.2",
+    "socket.io-client": "^4.8.1",
+    "sockjs-client": "^1.6.1",
+    "websocket": "^1.0.35"
   },
   "devDependencies": {
     "@eslint/js": "^9.15.0",

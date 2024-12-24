@@ -14,12 +14,16 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
+import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/house")
-class HouseController(private val houseService: HouseService) {
+class HouseController(
+    private val houseService: HouseService,
+    private val simpMessagingTemplate: SimpMessagingTemplate,
+    ) {
     @GetMapping("/{id}")
     fun getHouse(@PathVariable @Min(0) id: Long) : ResponseEntity<HouseResponse> =
         ResponseEntity.ok(houseService.getHouseById(id))
@@ -44,18 +48,21 @@ class HouseController(private val houseService: HouseService) {
         val house = houseService.createHouse(req)
         val headers = HttpHeaders()
         headers.set(HttpHeaders.LOCATION, "/api/house/${house.id}")
+        simpMessagingTemplate.convertAndSend("/topic/app", "")
         return ResponseEntity.ok().headers(headers).body(house)
     }
     @DeleteMapping("/{id}")
     @Transactional
     fun deleteHouse(@PathVariable @Min(0) id: Long) : ResponseEntity<Void> {
         houseService.deleteHouse(id)
+        simpMessagingTemplate.convertAndSend("/topic/app", "")
         return ResponseEntity.ok(null)
     }
     @PutMapping("/{id}")
     @Transactional
     fun updateFlat(@PathVariable id: Long, @RequestBody @Valid req: UpdateHouseRequest) : ResponseEntity<Void> {
         houseService.updateHouse(id, req)
+        simpMessagingTemplate.convertAndSend("/topic/app", "")
         return ResponseEntity.ok().body(null)
     }
 }

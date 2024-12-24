@@ -17,11 +17,15 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
+import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/flat")
-class FlatController(private val flatService: FlatService) {
+class FlatController(
+    private val flatService: FlatService,
+    private val simpMessagingTemplate: SimpMessagingTemplate,
+) {
 
     @GetMapping("/{id}")
     fun getFlat(@PathVariable @Min(0) id : Long) : ResponseEntity<FlatResponse> =
@@ -51,6 +55,7 @@ class FlatController(private val flatService: FlatService) {
         val flat = flatService.createFlat(req)
         val headers = HttpHeaders()
         headers.set(HttpHeaders.LOCATION, "/api/flat/${flat.id}")
+        simpMessagingTemplate.convertAndSend("/topic/app", "")
         return ResponseEntity.ok().headers(headers).body(flat)
     }
 
@@ -75,4 +80,25 @@ class FlatController(private val flatService: FlatService) {
     @GetMapping("/view")
     fun getView() : ResponseEntity<ViewResponse> =
         ResponseEntity.ok(flatService.getView())
+
+    @DeleteMapping("/func/delete/{transport}")
+    @Transactional
+    fun deleteFlatsByTransport(@PathVariable transport: String) {
+        flatService.deleteFlatsByTransport(transport)
+    }
+
+    @GetMapping("/func/count/{houseId}")
+    fun countFlatsByHouseIdLessThan(@PathVariable houseId: Long): Int {
+        return flatService.countFlatsByHouseIdLessThan(houseId)
+    }
+
+    @GetMapping("/func/cheaper")
+    fun getCheaperFlat(@RequestParam id1: Long, @RequestParam id2: Long): FlatResponse? {
+        return flatService.getCheaperFlat(id1, id2)
+    }
+
+    @GetMapping("/func/sorted")
+    fun getFlatsSortedByMetroTime(): List<FlatResponse> {
+        return flatService.getFlatsSortedByMetroTime()
+    }
 }

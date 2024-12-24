@@ -1,24 +1,54 @@
 import React, { useEffect, useState } from 'react';
+import SockJS from 'sockjs-client';
+import { Stomp } from '@stomp/stompjs';
+import FlatMap from "../dots/Flat.jsx";
 
 const Furnish = { DESIGNER: 'DESIGNER', FINE: 'FINE', BAD: 'BAD', LITTLE: 'LITTLE' };
 const Transport = { FEW: 'FEW', LITTLE: 'LITTLE', NORMAL: 'NORMAL', ENOUGH: 'ENOUGH' };
 const View = { STREET: 'STREET', YARD: 'YARD', BAD: 'BAD', NORMAL: 'NORMAL' };
-
-
+const Sort = {ID: "id", NAME: "name", AREA: "area", PRICE: "price", TIMETOMETROONFOOT: "time_to_metro_on_foot", NUMBEROFROOMS: "number_of_rooms"}
+const Filter = {NAME: "name", AREA: "area", PRICE: "price", TIMETOMETROONFOOT: "time_to_metro_on_foot", NUMBEROFROOMS: "number_of_rooms"}
+const SortOrder = {ASC: "asc", DESC: "desc"}
 const FlatTable = () => {
     const [flat, setFlat] = useState([]);
     const [currentPage, setCurrentPage] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
+    const [sortBy, setSortBy] = useState(Sort.ID);
+    const [sortOrder, setSortOrder] = useState(SortOrder.ASC)
+    const [filterName, setFilterName] = useState("filter");
+    const [filterValue, setFilterValue] = useState(0);
     const [loading, setLoading] = useState(false);
     const [editingFlat, setEditingFlat] = useState(null); // Для хранения данных редактируемого автомобиля
     const [error, setError] = useState('');
+
+
+    useEffect(() => {
+        connectWebSocket(currentPage, sortBy, sortOrder, filterName, filterValue)
+    }, [currentPage, sortBy, sortOrder, filterName, filterValue])
+    const jwtToken = localStorage.getItem('jwtToken');
+    function connectWebSocket(currentPage, sortBy, sortOrder, filterName, filterValue) {
+        const socket = new SockJS("http://localhost:8080/ws")
+        let stompClient = Stomp.over(socket)
+
+        stompClient.connect({
+            // Заголовки для подключения
+            Authorization: `Bearer ${jwtToken}`,  // Передаем Bearer токен
+        }, function () {
+            stompClient.subscribe('/topic/app', data => {
+                fetchFlats(currentPage, sortBy, sortOrder, filterName, filterValue)
+            })
+        })
+    }
+
+
+
     // Функция для загрузки данных с бэкенда
-    const fetchFlats = async (page) => {
+    const fetchFlats = async (page, sortBy, sortOrder, filterName, filterValue) => {
         setLoading(true);
         const jwtToken = localStorage.getItem('jwtToken'); // Получаем JWT из localStorage
 
         try {
-            const response = await fetch(`http://localhost:8080/api/flat?page=${page}`, {
+            const response = await fetch(`http://localhost:8080/api/flat?page=${page}&sort_by=${sortBy}&sort_order=${sortOrder}&${filterName}=${filterValue}`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${jwtToken}`,
@@ -43,8 +73,8 @@ const FlatTable = () => {
 
     // Загрузка данных при изменении страницы
     useEffect(() => {
-        fetchFlats(currentPage);
-    }, [currentPage]);
+        fetchFlats(currentPage, sortBy, sortOrder, filterName, filterValue);
+    }, [currentPage, sortBy, sortOrder, filterName, filterValue]);
 
     // Функция для получения данных дома для редактирования
     const fetchFlatDetails = async (id) => {
@@ -144,7 +174,7 @@ const FlatTable = () => {
             }
 
             setEditingFlat(null); // Закрыть форму редактирования
-            fetchFlats(currentPage); // Обновить список автомобилей
+            fetchFlats(currentPage, sortBy, sortOrder, filterName, filterValue); // Обновить список
         } catch (error) {
             alert(error.message);
         }
@@ -166,7 +196,7 @@ const FlatTable = () => {
                 throw new Error('Ошибка при удалении автомобиля');
             }
 
-            fetchFlats(currentPage); // Обновить список автомобилей после удаления
+            fetchFlats(currentPage, sortBy, sortOrder, filterName, filterValue); // Обновить список автомобилей после удаления
         } catch (error) {
             alert(error.message);
         }
@@ -190,52 +220,92 @@ const FlatTable = () => {
             {loading ? (
                 <p>Загрузка...</p>
             ) : (
-                <table>
-                    <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>House ID</th>
-                        <th>Name</th>
-                        <th>X</th>
-                        <th>Y</th>
-                        <th>Area</th>
-                        <th>Price</th>
-                        <th>Balcony</th>
-                        <th>Time to metro on foot</th>
-                        <th>Number of rooms</th>
-                        <th>Furnish</th>
-                        <th>View</th>
-                        <th>Transport</th>
-                        <th>Edit</th>
-                        <th>Delete</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {flat.map((flat) => (
-                        <tr key={flat.id}>
-                            <td>{flat.id}</td>
-                            <td>{flat.house.id}</td>
-                            <td>{flat.name}</td>
-                            <td>{flat.coordinates.x}</td>
-                            <td>{flat.coordinates.y}</td>
-                            <td>{flat.area}</td>
-                            <td>{flat.price}</td>
-                            <td>{flat.balcony ? "Yes" : "No"}</td>
-                            <td>{flat.time_to_metro_on_foot}</td>
-                            <td>{flat.number_of_rooms}</td>
-                            <td>{flat.furnish}</td>
-                            <td>{flat.view}</td>
-                            <td>{flat.transport}</td>
-                            <td>
-                                <button onClick={() => fetchFlatDetails(flat.id)}>Edit</button>
-                            </td>
-                            <td>
-                                <button onClick={() => handleDelete(flat.id)}>Delete</button>
-                            </td>
+                <div>
+                    <div>
+                        <label>
+                            Sort by:
+                            <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+                                <option value={Sort.ID}>ID</option>
+                                <option value={Sort.NAME}>Name</option>
+                                <option value={Sort.AREA}>Area</option>
+                                <option value={Sort.PRICE}>Price</option>
+                                <option value={Sort.TIMETOMETROONFOOT}>Time to Metro</option>
+                                <option value={Sort.NUMBEROFROOMS}>Number of Rooms</option>
+                            </select>
+                        </label>
+                        <label>
+                            Sort order:
+                            <select value={sortOrder} onChange={(e) => setSortOrder(e.target.value)}>
+                                <option value={SortOrder.ASC}>Asc</option>
+                                <option value={SortOrder.DESC}>Desc</option>
+                            </select>
+                        </label>
+                        <label>
+                            Filter by:
+                            <select value={filterName} onChange={(e) => setFilterName(e.target.value)}>
+                                <option value={Filter.NAME}>Name</option>
+                                <option value={Filter.AREA}>Area</option>
+                                <option value={Filter.PRICE}>Price</option>
+                                <option value={Filter.TIMETOMETROONFOOT}>Time to Metro</option>
+                                <option value={Filter.NUMBEROFROOMS}>Number of Rooms</option>
+                            </select>
+                        </label>
+                        <label>
+                            Filter value:
+                            <input
+                                type="text"
+                                value={filterValue}
+                                onChange={(e) => setFilterValue(e.target.value)}
+                            />
+                        </label>
+                    </div>
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>House ID</th>
+                            <th>Name</th>
+                            <th>X</th>
+                            <th>Y</th>
+                            <th>Area</th>
+                            <th>Price</th>
+                            <th>Balcony</th>
+                            <th>Time to metro on foot</th>
+                            <th>Number of rooms</th>
+                            <th>Furnish</th>
+                            <th>View</th>
+                            <th>Transport</th>
+                            <th>Edit</th>
+                            <th>Delete</th>
                         </tr>
-                    ))}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                        {flat.map((flat) => (
+                            <tr key={flat.id}>
+                                <td>{flat.id}</td>
+                                <td>{flat.house.id}</td>
+                                <td>{flat.name}</td>
+                                <td>{flat.coordinates.x}</td>
+                                <td>{flat.coordinates.y}</td>
+                                <td>{flat.area}</td>
+                                <td>{flat.price}</td>
+                                <td>{flat.balcony ? "Yes" : "No"}</td>
+                                <td>{flat.time_to_metro_on_foot}</td>
+                                <td>{flat.number_of_rooms}</td>
+                                <td>{flat.furnish}</td>
+                                <td>{flat.view}</td>
+                                <td>{flat.transport}</td>
+                                {flat.is_mine ? <td>
+                                    <button onClick={() => fetchFlatDetails(flat.id)}>Edit</button>
+                                </td> : ""}
+                                {flat.is_mine ? <td>
+                                    <button onClick={() => handleDelete(flat.id)}>Delete</button>
+                                </td> : ""}
+                            </tr>
+                        ))}
+                        </tbody>
+                    </table>
+                </div>
             )}
 
             <div>
@@ -249,6 +319,8 @@ const FlatTable = () => {
                     Forward
                 </button>
             </div>
+            {console.log(flat)}
+            <FlatMap flats={flat}/>
 
             {/* Модальное окно для редактирования */}
             {editingFlat && (
@@ -402,10 +474,79 @@ const modalStyles = {
     container: {
         backgroundColor: 'white',
         padding: '20px',
-        borderRadius: '5px',
-        width: '300px',
+        borderRadius: '10px',
+        width: '500px',  // ширина контейнера
+        maxHeight: '80vh', // максимальная высота
+        overflowY: 'auto', // прокрутка, если форма слишком длинная
+        textAlign: 'left',
+        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', // тень для красоты
+        display: 'grid',
+        gridTemplateColumns: '1fr 1fr', // два столбца
+        gap: '15px', // расстояние между элементами
+    },
+    header: {
+        gridColumn: 'span 2', // заголовок на всю ширину
         textAlign: 'center',
+        color: '#333',
+        marginBottom: '20px',
+        fontSize: '18px',
+        fontWeight: 'bold',
+    },
+    label: {
+        display: 'block',
+        marginBottom: '8px',
+        fontWeight: 'bold',
+        color: '#555',
+    },
+    input: {
+        width: '100%',
+        padding: '8px',
+        marginBottom: '12px',
+        border: '1px solid #ddd',
+        borderRadius: '5px',
+        fontSize: '14px',
+        boxSizing: 'border-box',
+    },
+    select: {
+        width: '100%',
+        padding: '8px',
+        marginBottom: '12px',
+        border: '1px solid #ddd',
+        borderRadius: '5px',
+        fontSize: '14px',
+        boxSizing: 'border-box',
+    },
+    radioLabel: {
+        marginRight: '10px',
+    },
+    button: {
+        backgroundColor: '#007bff',
+        color: 'white',
+        padding: '8px 15px',
+        border: 'none',
+        borderRadius: '5px',
+        cursor: 'pointer',
+        fontSize: '16px',
+        marginRight: '10px',
+        transition: 'background-color 0.3s',
+    },
+    buttonHover: {
+        backgroundColor: '#0056b3',
+    },
+    error: {
+        color: '#ff0000',
+        fontSize: '14px',
+        marginTop: '-10px',
+        marginBottom: '15px',
+    },
+    closeButton: {
+        backgroundColor: '#dc3545',
+        color: 'white',
+    },
+    closeButtonHover: {
+        backgroundColor: '#c82333',
     },
 };
+
 
 export default FlatTable;
