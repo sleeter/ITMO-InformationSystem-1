@@ -1,6 +1,5 @@
 package itmo.sleeter.infosys.controller
 
-import com.fasterxml.jackson.annotation.JsonProperty
 import itmo.sleeter.infosys.dto.request.AdminRequest
 import itmo.sleeter.infosys.dto.response.AdminRequestResponse
 import itmo.sleeter.infosys.service.RequestService

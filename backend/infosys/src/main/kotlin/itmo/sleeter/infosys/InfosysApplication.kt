@@ -13,6 +13,3 @@ class InfosysApplication
 fun main(args: Array<String>) {
 	runApplication<InfosysApplication>(*args)
 }
-
-
-// TODO: websocket

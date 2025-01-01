@@ -1,7 +1,6 @@
 package itmo.sleeter.infosys.filter
 
 import itmo.sleeter.infosys.service.JwtService
-import itmo.sleeter.infosys.service.UserService
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse

@@ -5,7 +5,6 @@ import itmo.sleeter.infosys.dto.response.AdminRequestResponse
 import itmo.sleeter.infosys.enumeration.Role
 import itmo.sleeter.infosys.model.Request
 import itmo.sleeter.infosys.repository.RequestRepository
-import itmo.sleeter.infosys.repository.UserRepository
 import org.springframework.stereotype.Service
 
 @Service

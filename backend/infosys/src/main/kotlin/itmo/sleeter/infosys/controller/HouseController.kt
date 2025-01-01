@@ -2,7 +2,6 @@ package itmo.sleeter.infosys.controller
 
 import itmo.sleeter.infosys.dto.request.CreateHouseRequest
 import itmo.sleeter.infosys.dto.request.HouseFilter
-import itmo.sleeter.infosys.dto.request.UpdateFlatRequest
 import itmo.sleeter.infosys.dto.request.UpdateHouseRequest
 import itmo.sleeter.infosys.dto.response.HouseResponse
 import itmo.sleeter.infosys.service.HouseService
