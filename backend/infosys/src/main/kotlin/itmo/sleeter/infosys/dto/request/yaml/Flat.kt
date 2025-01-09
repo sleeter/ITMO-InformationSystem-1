@@ -1,14 +1,18 @@
-package itmo.sleeter.infosys.dto.request
+package itmo.sleeter.infosys.dto.request.yaml
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import jakarta.validation.constraints.Max
 import jakarta.validation.constraints.Min
 import jakarta.validation.constraints.NotEmpty
 
-data class CreateFlatRequest(
+data class Flat(
     @NotEmpty
     val name: String,
-    @Min(1) @Max(724)
+    @JsonProperty("coordinates_id")
+    val coordinatesId: Long? = null,
+    val coordinates: List<Coordinate>? = null,
+    @Min(1)
+    @Max(724)
     val area: Double,
     @Min(1)
     val price: Double,
@@ -22,11 +26,7 @@ data class CreateFlatRequest(
     val furnish: String,
     val view: String,
     val transport: String,
-    val coordinate: CoordinatesRequest,
     @JsonProperty("house_id")
-    @Min(0)
-    val houseId: Long,
-    @JsonProperty("user_id")
-    @Min(0)
-    val userId: Long
+    val houseId: Long? = null,
+    val house: List<House>? = null
 )

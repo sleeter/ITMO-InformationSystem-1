@@ -77,4 +77,20 @@ class HouseService(
         house.updatedAt = Instant.now()
         houseRepository.save(house)
     }
+
+    fun createHousesFromFile(houses: List<itmo.sleeter.infosys.dto.request.yaml.House>) {
+        val arr = mutableListOf<House>()
+        houses.forEach { house ->
+            val h = House()
+            h.name = house.name
+            h.numberOfLifts = house.numberOfLifts
+            h.year = house.year
+            h.createdAt = Instant.now()
+            h.updatedAt = Instant.now()
+            h.userCreate = userService.getCurrentUser()
+            h.userUpdate = userService.getCurrentUser()
+            arr.add(h)
+        }
+        houseRepository.saveAll(arr)
+    }
 }

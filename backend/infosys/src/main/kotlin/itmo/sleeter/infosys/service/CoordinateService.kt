@@ -1,6 +1,7 @@
 package itmo.sleeter.infosys.service
 
 import itmo.sleeter.infosys.dto.response.CoordinateResponse
+import itmo.sleeter.infosys.exception.EntityNotFoundException
 import itmo.sleeter.infosys.mapper.CoordinateMapper
 import itmo.sleeter.infosys.model.Coordinate
 import itmo.sleeter.infosys.repository.CoordinateRepository
@@ -18,5 +19,10 @@ class CoordinateService(
             .orElse(coordinateMapper.xAndYToCoordinate(x, y))
         coordinateRepository.save(coordinate)
         return coordinate
+    }
+    fun findCoordinateById(id: Long): Coordinate {
+        return coordinateRepository.findById(id).orElseThrow{
+            EntityNotFoundException("No coordinate found with id $id")
+        }
     }
 }

@@ -1,0 +1,89 @@
+house:
+  - name: "Green Valley"
+    number_of_lifts: 3
+    year: 1
+  - name: "Blue Horizon"
+    number_of_lifts: 5
+    year: 450
+  - name: "Golden Heights"
+    number_of_lifts: 2
+    year: 300
+  - name: "Sunrise Tower"
+    number_of_lifts: 4
+    year: 150
+  - name: "Silver Garden"
+    number_of_lifts: 6
+    year: 100
+
+flat:
+  - name: "Sunny Apartment"
+    coordinates_id: 1
+    area: 55.5
+    price: 35000.0
+    balcony: true
+    time_to_metro_on_foot: 10.0
+    number_of_rooms: 2
+    furnish: "FINE"
+    view: "NORMAL"
+    transport: "NORMAL"
+    house_id: 1
+  - name: "Cozy Nest"
+    coordinates_id: 1
+    area: 42.0
+    price: 25000.0
+    balcony: false
+    time_to_metro_on_foot: 15.0
+    number_of_rooms: 1
+    furnish: "FINE"
+    view: "NORMAL"
+    transport: "NORMAL"
+    house_id: 2
+  - name: "Luxury Retreat"
+    coordinates_id: 1
+    area: 120.0
+    price: 95000.0
+    balcony: true
+    time_to_metro_on_foot: 5.0
+    number_of_rooms: 4
+    furnish: "FINE"
+    view: "NORMAL"
+    transport: "NORMAL"
+    house_id: 3
+  - name: "Budget Studio"
+    coordinates_id: 1
+    area: 30.0
+    price: 18000.0
+    balcony: false
+    time_to_metro_on_foot: 20.0
+    number_of_rooms: 1
+    furnish: "FINE"
+    view: "NORMAL"
+    transport: "NORMAL"
+    house_id: 4
+  - name: "Modern Loft"
+    coordinates:
+      - x: 50
+        y: 50
+    area: 70.0
+    price: 55000.0
+    balcony: true
+    time_to_metro_on_foot: 12.0
+    number_of_rooms: 3
+    furnish: "FINE"
+    view: "NORMAL"
+    transport: "NORMAL"
+    house:
+      - name: "Nested house"
+        number_of_lifts: 3
+        year: 200
+  - name: "Elegant Suite"
+    coordinates_id: 1
+    area: 80.0
+    price: 70000.0
+    balcony: true
+    time_to_metro_on_foot: 8.0
+    number_of_rooms: 3
+    furnish: "FINE"
+    view: "NORMAL"
+    transport: "NORMAL"
+    house_id: 1

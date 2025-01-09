@@ -1,6 +1,7 @@
 package itmo.sleeter.infosys.service
 
 import itmo.sleeter.infosys.dto.request.CreateFlatRequest
+import itmo.sleeter.infosys.dto.request.CreateHouseRequest
 import itmo.sleeter.infosys.dto.request.FlatFilter
 import itmo.sleeter.infosys.dto.request.UpdateFlatRequest
 import itmo.sleeter.infosys.dto.response.FlatResponse
@@ -12,6 +13,8 @@ import itmo.sleeter.infosys.enumeration.Transport
 import itmo.sleeter.infosys.enumeration.View
 import itmo.sleeter.infosys.exception.EntityNotFoundException
 import itmo.sleeter.infosys.mapper.FlatMapper
+import itmo.sleeter.infosys.model.Coordinate
+import itmo.sleeter.infosys.model.Flat
 import itmo.sleeter.infosys.repository.FlatRepository
 import itmo.sleeter.infosys.specification.FlatSpecification
 import org.springframework.data.domain.Page
@@ -160,6 +163,44 @@ class FlatService(
             flat.userCreate?.id == user.id
         )
         }
+    }
+    fun createFlatsFromFile(flats: List<itmo.sleeter.infosys.dto.request.yaml.Flat>) {
+        val arr = mutableListOf<Flat>()
+        flats.forEach { flat ->
+            val f = Flat()
+            f.name = flat.name
+            f.area = flat.area
+            f.price = flat.price
+            f.balcony = flat.balcony
+            f.timeToMetroOnFoot = flat.timeToMetroOnFoot
+            f.numberOfRooms = flat.numberOfRooms
+            f.furnish = flat.furnish
+            f.view = flat.view
+            f.transport = flat.transport
+            f.creationDate = Instant.now()
+            f.updatedAt = Instant.now()
+            f.userCreate = userService.getCurrentUser()
+            f.userUpdate = userService.getCurrentUser()
+            if (flat.coordinatesId != null) {
+                f.coordinates = coordinateService.findCoordinateById(flat.coordinatesId)
+            } else if (flat.coordinates != null) {
+                f.coordinates = coordinateService.findCoordinateByXAndY(flat.coordinates.first().x, flat.coordinates.first().y)
+            }
+            if (flat.houseId != null) {
+                f.house = houseService.getHouse(flat.houseId)
+            } else if (flat.house != null) {
+                val req = CreateHouseRequest(
+                    flat.house.first().name,
+                    flat.house.first().numberOfLifts,
+                    flat.house.first().year,
+                    userService.getCurrentUser().id!!,
+                )
+                val h = houseService.createHouse(req)
+                f.house = houseService.getHouse(h.id)
+            }
+            arr.add(f)
+        }
+        flatRepository.saveAll(arr)
     }
 }
 

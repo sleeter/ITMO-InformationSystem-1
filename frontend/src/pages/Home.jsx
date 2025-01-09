@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import HouseTable from "../tables/House.jsx";
 import FlatTable from "../tables/Flat.jsx";
@@ -10,6 +10,7 @@ import FlatOperations from "../operations/Flat.jsx";
 function Home() {
     const location = useLocation();
     const navigate = useNavigate();
+    const [selectedFile, setSelectedFile] = useState(null);
     var username = location.state?.username || 'Guest';
     const token = localStorage.getItem('jwtToken');
 
@@ -58,6 +59,37 @@ function Home() {
         navigate('/home/admin');  // Переход на панель админа в том же окне
     };
 
+    const handleFileChange = (event) => {
+        setSelectedFile(event.target.files[0]);
+    };
+
+    const handleFileUpload = async () => {
+        if (!selectedFile) {
+            alert("Please select a file first.");
+            return;
+        }
+        const formData = new FormData();
+        formData.append('file', selectedFile);
+
+        try {
+            const response = await fetch("http://localhost:8080/infosys/lab2", {
+                method: "POST",
+                body: formData,
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+
+            if (response.ok) {
+                alert("File uploaded successfully!");
+            } else {
+                alert("Failed to upload file.");
+            }
+        } catch (error) {
+            alert("An error occurred while uploading the file.");
+        }
+    };
+
     return (
         <div>
             {/* Хедер */}
@@ -83,6 +115,12 @@ function Home() {
             <FlatTable/>
 
             <FlatOperations/>
+
+            <h2>File Upload</h2>
+            <div>
+                <input type="file" onChange={handleFileChange}/>
+                <button onClick={handleFileUpload}>Upload File</button>
+            </div>
 
         </div>
 
