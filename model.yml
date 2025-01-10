@@ -37,7 +37,7 @@ flat:
     furnish: "FINE"
     view: "NORMAL"
     transport: "NORMAL"
-    house_id: 2
+    house_id: 1
   - name: "Luxury Retreat"
     coordinates_id: 1
     area: 120.0
@@ -48,7 +48,7 @@ flat:
     furnish: "FINE"
     view: "NORMAL"
     transport: "NORMAL"
-    house_id: 3
+    house_id: 1
   - name: "Budget Studio"
     coordinates_id: 1
     area: 30.0
@@ -59,7 +59,7 @@ flat:
     furnish: "FINE"
     view: "NORMAL"
     transport: "NORMAL"
-    house_id: 4
+    house_id: 1
   - name: "Modern Loft"
     coordinates:
       - x: 50

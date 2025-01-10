@@ -4,6 +4,7 @@ import itmo.sleeter.infosys.dto.request.CreateFlatRequest
 import itmo.sleeter.infosys.dto.request.CreateHouseRequest
 import itmo.sleeter.infosys.dto.request.FlatFilter
 import itmo.sleeter.infosys.dto.request.UpdateFlatRequest
+import itmo.sleeter.infosys.dto.request.yaml.YamlData
 import itmo.sleeter.infosys.dto.response.FlatResponse
 import itmo.sleeter.infosys.dto.response.FurnishResponse
 import itmo.sleeter.infosys.dto.response.TransportResponse
@@ -13,7 +14,6 @@ import itmo.sleeter.infosys.enumeration.Transport
 import itmo.sleeter.infosys.enumeration.View
 import itmo.sleeter.infosys.exception.EntityNotFoundException
 import itmo.sleeter.infosys.mapper.FlatMapper
-import itmo.sleeter.infosys.model.Coordinate
 import itmo.sleeter.infosys.model.Flat
 import itmo.sleeter.infosys.repository.FlatRepository
 import itmo.sleeter.infosys.specification.FlatSpecification
@@ -21,6 +21,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.time.Instant
 
 @Service
@@ -164,8 +165,15 @@ class FlatService(
         )
         }
     }
-    fun createFlatsFromFile(flats: List<itmo.sleeter.infosys.dto.request.yaml.Flat>) {
+    @Transactional
+    fun createFlatsAndHousesFromFile(data: YamlData): Int {
+        val count1 = houseService.createHousesFromFile(data.house)
+        val count2 = createFlatsFromFile(data.flat)
+        return count1 + count2
+    }
+    fun createFlatsFromFile(flats: List<itmo.sleeter.infosys.dto.request.yaml.Flat>): Int {
         val arr = mutableListOf<Flat>()
+        var count: Int = 0
         flats.forEach { flat ->
             val f = Flat()
             f.name = flat.name
@@ -185,6 +193,7 @@ class FlatService(
                 f.coordinates = coordinateService.findCoordinateById(flat.coordinatesId)
             } else if (flat.coordinates != null) {
                 f.coordinates = coordinateService.findCoordinateByXAndY(flat.coordinates.first().x, flat.coordinates.first().y)
+                count++
             }
             if (flat.houseId != null) {
                 f.house = houseService.getHouse(flat.houseId)
@@ -197,10 +206,12 @@ class FlatService(
                 )
                 val h = houseService.createHouse(req)
                 f.house = houseService.getHouse(h.id)
+                count++
             }
             arr.add(f)
         }
         flatRepository.saveAll(arr)
+        return count + arr.size
     }
 }
 

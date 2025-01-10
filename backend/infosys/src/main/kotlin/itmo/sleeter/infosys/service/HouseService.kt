@@ -78,7 +78,7 @@ class HouseService(
         houseRepository.save(house)
     }
 
-    fun createHousesFromFile(houses: List<itmo.sleeter.infosys.dto.request.yaml.House>) {
+    fun createHousesFromFile(houses: List<itmo.sleeter.infosys.dto.request.yaml.House>): Int {
         val arr = mutableListOf<House>()
         houses.forEach { house ->
             val h = House()
@@ -92,5 +92,6 @@ class HouseService(
             arr.add(h)
         }
         houseRepository.saveAll(arr)
+        return arr.size
     }
 }

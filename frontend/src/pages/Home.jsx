@@ -6,6 +6,7 @@ import HouseForm from "../inputs/House.jsx";
 import FlatForm from "../inputs/Flat.jsx";
 import AdminForm from "../inputs/Admin.jsx";
 import FlatOperations from "../operations/Flat.jsx";
+import ImportTable from "../tables/Import.jsx";
 
 function Home() {
     const location = useLocation();
@@ -80,9 +81,7 @@ function Home() {
                 },
             });
 
-            if (response.ok) {
-                alert("File uploaded successfully!");
-            } else {
+            if (!response.ok) {
                 alert("Failed to upload file.");
             }
         } catch (error) {
@@ -116,6 +115,8 @@ function Home() {
 
             <FlatOperations/>
 
+
+            <ImportTable/>
             <h2>File Upload</h2>
             <div>
                 <input type="file" onChange={handleFileChange}/>

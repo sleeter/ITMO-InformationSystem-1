@@ -51,3 +51,10 @@ CREATE TABLE Requests (
     admin_id BIGINT NOT NULL REFERENCES Users(id),
     approved BOOLEAN NOT NULL
 );
+
+CREATE TABLE imports (
+    id bigserial primary key,
+    status boolean not null,
+    user_create_id bigint references Users(id),
+    count int not null
+);
