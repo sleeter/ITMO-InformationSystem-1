@@ -1,6 +1,7 @@
 package itmo.sleeter.infosys.service
 
 import itmo.sleeter.infosys.dto.response.ImportResponse
+import itmo.sleeter.infosys.enumeration.Role
 import itmo.sleeter.infosys.mapper.ImportMapper
 import itmo.sleeter.infosys.model.Import
 import itmo.sleeter.infosys.repository.ImportRepository
@@ -18,11 +19,12 @@ class ImportService(
     fun getImports(pageable: Pageable): Page<ImportResponse> {
         val page = importRepository.findAll(pageable).map { importMapper.importToImportResponse(it) }
         val user = userService.getCurrentUser()
-        if (user.role!!.name != "admin") {
-            page.filter { it.userId == user.id }
+        var content = page.content
+        if (user.role!!.name != Role.ROLE_ADMIN.name) {
+            content = page.filter { it.userId == user.id }.toList()
         }
         return PageImpl(
-            page.content,
+            content,
             pageable,
             page.totalElements,
         )
