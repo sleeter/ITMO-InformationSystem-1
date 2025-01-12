@@ -132,9 +132,9 @@ const ImportTable = () => {
                             <td>{imp.status ? "accepted" : "rejected"}</td>
                             <td>{imp.user_id}</td>
                             <td>{imp.count_of_objects}</td>
-                            <td>
+                            {imp.count_of_objects !== 0 ? <td>
                                 <button onClick={() => downloadFile(imp.id, imp.filename)}>Download</button>
-                            </td>
+                            </td> : ""}
                         </tr>
                     ))}
                     </tbody>
