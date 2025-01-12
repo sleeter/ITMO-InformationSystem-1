@@ -1,0 +1,35 @@
+meta {
+  name: updateFlat
+  type: http
+  seq: 11
+}
+
+put {
+  url: http://localhost:8080/api/flat/27
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "name": "flatName",
+    "area": 49,
+    "price": 50,
+    "balcony": true,
+    "time_to_metro_on_foot": 5,
+    "number_of_rooms": 5,
+    "furnish": "FINE",
+    "view": "NORMAL",
+    "transport": "NORMAL",
+    "coordinate": {
+      "x": 200,
+      "y": 200
+    },
+    "house_id": 15,
+    "user_id": 2
+  }
+}

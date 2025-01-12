@@ -1,0 +1,15 @@
+meta {
+  name: deleteFlat
+  type: http
+  seq: 11
+}
+
+delete {
+  url: http://localhost:8080/api/flat/3
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

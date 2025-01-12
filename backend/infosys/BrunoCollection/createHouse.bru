@@ -1,0 +1,28 @@
+meta {
+  name: createHouse
+  type: http
+  seq: 4
+}
+
+post {
+  url: http://localhost:8080/api/house
+  body: json
+  auth: bearer
+}
+
+headers {
+  : 
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "name": "house1",
+    "number_of_lifts": 5,
+    "year": 800,
+    "user_id": 1
+  }
+}

@@ -1,0 +1,35 @@
+meta {
+  name: createFlat
+  type: http
+  seq: 8
+}
+
+post {
+  url: http://localhost:8080/api/flat
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "name": "flatName",
+    "area": 55,
+    "price": 100,
+    "balcony": true,
+    "time_to_metro_on_foot": 5,
+    "number_of_rooms": 5,
+    "furnish": "FINE",
+    "view": "NORMAL",
+    "transport": "NORMAL",
+    "coordinate": {
+      "x": 300,
+      "y": 350
+    },
+    "house_id": 2,
+    "user_id": 1
+  }
+}

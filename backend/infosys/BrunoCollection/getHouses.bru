@@ -1,0 +1,23 @@
+meta {
+  name: getHouses
+  type: http
+  seq: 6
+}
+
+get {
+  url: http://localhost:8080/api/house?page=1&size=10&sort_by=numberOfLifts&sort_order=desc&year=900
+  body: none
+  auth: bearer
+}
+
+params:query {
+  page: 1
+  size: 10
+  sort_by: numberOfLifts
+  sort_order: desc
+  year: 900
+}
+
+auth:bearer {
+  token: {{token}}
+}

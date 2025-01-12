@@ -1,0 +1,21 @@
+meta {
+  name: adminRequest
+  type: http
+  seq: 14
+}
+
+post {
+  url: http://localhost:8080/api/admin/request
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "login": "user"
+  }
+}

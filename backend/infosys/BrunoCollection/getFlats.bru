@@ -1,0 +1,23 @@
+meta {
+  name: getFlats
+  type: http
+  seq: 10
+}
+
+get {
+  url: http://localhost:8080/api/flat?page=0&size=10&sort_by=id&sort_order=asc&number_of_rooms=5
+  body: none
+  auth: bearer
+}
+
+params:query {
+  page: 0
+  size: 10
+  sort_by: id
+  sort_order: asc
+  number_of_rooms: 5
+}
+
+auth:bearer {
+  token: {{token}}
+}

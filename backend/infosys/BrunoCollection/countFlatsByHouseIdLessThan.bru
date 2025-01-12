@@ -1,0 +1,15 @@
+meta {
+  name: countFlatsByHouseIdLessThan
+  type: http
+  seq: 18
+}
+
+get {
+  url: http://localhost:8080/api/flat/func/count/5
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

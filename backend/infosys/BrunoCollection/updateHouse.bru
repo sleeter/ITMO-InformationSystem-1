@@ -1,0 +1,24 @@
+meta {
+  name: updateHouse
+  type: http
+  seq: 6
+}
+
+put {
+  url: http://localhost:8080/api/house/36
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "name": "house36",
+    "number_of_lifts": 3,
+    "year": 800,
+    "user_id": 3
+  }
+}

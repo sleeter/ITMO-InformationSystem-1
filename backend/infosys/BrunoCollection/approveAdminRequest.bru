@@ -1,0 +1,15 @@
+meta {
+  name: approveAdminRequest
+  type: http
+  seq: 16
+}
+
+post {
+  url: http://localhost:8080/api/admin/approve/1
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

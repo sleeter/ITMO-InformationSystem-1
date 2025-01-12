@@ -1,0 +1,20 @@
+meta {
+  name: getCheaperFlat
+  type: http
+  seq: 19
+}
+
+get {
+  url: http://localhost:8080/api/flat/func/cheaper?id1=1&id2=8
+  body: none
+  auth: bearer
+}
+
+params:query {
+  id1: 1
+  id2: 8
+}
+
+auth:bearer {
+  token: {{token}}
+}
