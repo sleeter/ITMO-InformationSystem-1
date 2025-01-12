@@ -17,10 +17,8 @@ class Validator {
     fun validate(yamlData: YamlData): List<ValidationError> {
         val errors = mutableListOf<ValidationError>()
 
-        // Валидация списка House
         errors.addAll(validateHouseList(yamlData.house))
 
-        // Валидация списка Flat
         errors.addAll(validateFlatList(yamlData.flat))
 
         return errors
@@ -28,16 +26,13 @@ class Validator {
 
     private fun validateHouseList(houses: List<House>): List<ValidationError> {
         val errors = mutableListOf<ValidationError>()
-        val houseNames = mutableSetOf<String>()
+//        val houseNames = mutableSetOf<String>()
 
         houses.forEachIndexed { index, house ->
-            // Валидация каждого дома
             errors.addAll(validateHouse(house, "house[$index]"))
-
-            // Проверка на уникальность имени дома
-            if (!houseNames.add(house.name)) {
-                errors.add(ValidationError("house[$index].name", "House name '${house.name}' must be unique"))
-            }
+//            if (!houseNames.add(house.name)) {
+//                errors.add(ValidationError("house[$index].name", "House name '${house.name}' must be unique"))
+//            }
         }
 
         return errors
@@ -45,16 +40,15 @@ class Validator {
 
     private fun validateFlatList(flats: List<Flat>): List<ValidationError> {
         val errors = mutableListOf<ValidationError>()
-        val flatNames = mutableSetOf<String>()
+//        val flatNames = mutableSetOf<String>()
 
         flats.forEachIndexed { index, flat ->
-            // Валидация каждой квартиры
             errors.addAll(validateFlat(flat, "flat[$index]"))
 
             // Проверка на уникальность имени квартиры
-            if (!flatNames.add(flat.name)) {
-                errors.add(ValidationError("flat[$index].name", "Flat name '${flat.name}' must be unique"))
-            }
+//            if (!flatNames.add(flat.name)) {
+//                errors.add(ValidationError("flat[$index].name", "Flat name '${flat.name}' must be unique"))
+//            }
         }
 
         return errors
@@ -97,7 +91,7 @@ class Validator {
             errors.add(ValidationError("$prefix.numberOfRooms", "Number of rooms must be at least 1"))
         }
 
-        if (flat.coordinates != null && flat.coordinates!!.size > 1) {
+        if (flat.coordinates != null && flat.coordinates.size > 1) {
             errors.add(ValidationError("flat.coordinates", "Flat assigned more than one coordinates"))
         }
         // Валидация координат, если указаны
@@ -105,7 +99,7 @@ class Validator {
             errors.addAll(validateCoordinate(coordinate, "$prefix.coordinates[$index]"))
         }
 
-        if (flat.house != null && flat.house!!.size > 1) {
+        if (flat.house != null && flat.house.size > 1) {
             errors.add(ValidationError("flat.house", "Flat assigned more than one house"))
         }
         // Валидация списка House в Flat, если указаны

@@ -17,10 +17,12 @@ import itmo.sleeter.infosys.mapper.FlatMapper
 import itmo.sleeter.infosys.model.Flat
 import itmo.sleeter.infosys.repository.FlatRepository
 import itmo.sleeter.infosys.specification.FlatSpecification
+import jakarta.persistence.EntityExistsException
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Isolation
 import org.springframework.transaction.annotation.Transactional
 import java.time.Instant
 
@@ -71,9 +73,13 @@ class FlatService(
     }
 
     fun createFlat(req: CreateFlatRequest) : FlatResponse {
+        val uniqueFlat = flatRepository.findFlatByName(req.name)
+        if (uniqueFlat.isPresent) {
+            throw EntityExistsException("Flat ${req.name} already exists")
+        }
         val coordinate = coordinateService.findCoordinateByXAndY(req.coordinate.x, req.coordinate.y)
         val house = houseService.getHouse(req.houseId)
-        val user = userService.getUser(req.userId)
+        val user = userService.getCurrentUser()
         val flat = flatRepository.save(
             flatMapper.createFlatRequestToFlat(
                 req,
@@ -152,9 +158,9 @@ class FlatService(
 
     // Получить список квартир, отсортированных по времени до метро
     fun getFlatsSortedByMetroTime(): List<FlatResponse> {
-        val flat = flatRepository.findAll().sortedBy { it.timeToMetroOnFoot }
+        val flats = flatRepository.findAll().sortedBy { it.timeToMetroOnFoot }
         val user = userService.getCurrentUser()
-        return flat.map {
+        return flats.map {
                 flat -> flatMapper.flatToFlatResponse(
             flat,
             coordinateService.coordinateToCoordinateResponse(flat.coordinates),
@@ -165,7 +171,7 @@ class FlatService(
         )
         }
     }
-    @Transactional
+    @Transactional(isolation = Isolation.READ_UNCOMMITTED)
     fun createFlatsAndHousesFromFile(data: YamlData): Int {
         val count1 = houseService.createHousesFromFile(data.house)
         val count2 = createFlatsFromFile(data.flat)
@@ -175,6 +181,10 @@ class FlatService(
         val arr = mutableListOf<Flat>()
         var count: Int = 0
         flats.forEach { flat ->
+            val uniqueFlat = flatRepository.findFlatByName(flat.name)
+            if (uniqueFlat.isPresent) {
+                throw EntityExistsException("Flat ${flat.name} already exists")
+            }
             val f = Flat()
             f.name = flat.name
             f.area = flat.area

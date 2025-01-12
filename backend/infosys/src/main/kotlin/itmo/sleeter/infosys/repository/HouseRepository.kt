@@ -13,6 +13,6 @@ interface HouseRepository :
     PagingAndSortingRepository<House, Long>,
     JpaSpecificationExecutor<House> {
     fun findHouseById(id: Long) : Optional<House>
-
+    fun findHouseByName(name: String) : Optional<House>
     fun save(house: House) : House
 }

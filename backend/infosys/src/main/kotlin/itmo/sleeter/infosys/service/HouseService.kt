@@ -10,6 +10,7 @@ import itmo.sleeter.infosys.model.House
 import itmo.sleeter.infosys.repository.FlatRepository
 import itmo.sleeter.infosys.repository.HouseRepository
 import itmo.sleeter.infosys.specification.HouseSpecification
+import jakarta.persistence.EntityExistsException
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
@@ -60,7 +61,11 @@ class HouseService(
     }
 
     fun createHouse(req: CreateHouseRequest) : HouseResponse {
-        val user = userService.getUser(req.userId)
+        val user = userService.getCurrentUser()
+        val uniqueHouse = houseRepository.findHouseByName(req.name)
+        if (uniqueHouse.isPresent) {
+            throw EntityExistsException("House ${req.name} already exists")
+        }
         return houseMapper.houseToHouseResponse(houseRepository.save(houseMapper.createHouseRequestToHouse(req, user, user, Instant.now(), Instant.now())), true)
     }
 
@@ -81,6 +86,10 @@ class HouseService(
     fun createHousesFromFile(houses: List<itmo.sleeter.infosys.dto.request.yaml.House>): Int {
         val arr = mutableListOf<House>()
         houses.forEach { house ->
+            val uniqueHouse = houseRepository.findHouseByName(house.name)
+            if (uniqueHouse.isPresent) {
+                throw EntityExistsException("House ${house.name} already exists")
+            }
             val h = House()
             h.name = house.name
             h.numberOfLifts = house.numberOfLifts

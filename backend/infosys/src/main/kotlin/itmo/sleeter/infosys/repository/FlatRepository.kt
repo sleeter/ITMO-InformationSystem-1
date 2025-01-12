@@ -14,6 +14,7 @@ interface FlatRepository :
     JpaRepository<Flat, Long>,
     JpaSpecificationExecutor<Flat> {
     fun findFlatById(id: Long) : Optional<Flat>
+    fun findFlatByName(name: String) : Optional<Flat>
     fun deleteAllByHouseId(id: Long)
     fun save(flat: Flat) : Flat
     @Query(value = "SELECT delete_flats_by_transport(:transport)", nativeQuery = true)

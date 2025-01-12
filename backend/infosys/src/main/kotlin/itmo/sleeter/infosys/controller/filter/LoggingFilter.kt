@@ -17,8 +17,8 @@ class LoggingFilter: OncePerRequestFilter() {
         response: HttpServletResponse,
         filterChain: FilterChain
     ) {
-        log.info("Received request: {}", request.requestURI)
+        log.info("Received request {}", String.format("%s: %s", request.method, request.requestURI))
         filterChain.doFilter(request, response)
-        log.info("Processed request: {}", request.requestURI)
+        log.info("Processed request {}", String.format("%s: %s", request.method, request.requestURI))
     }
 }
