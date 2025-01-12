@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
+import java.time.Instant
 
 @Service
 class ImportService(
@@ -29,12 +30,17 @@ class ImportService(
             page.totalElements,
         )
     }
-    fun saveImport(): Long {
+    fun getImport(id: Long): Import {
+        return importRepository.findById(id).get()
+    }
+    fun saveImport(filename: String): Import {
         val import = Import()
         import.count = 0
         import.userCreate = userService.getCurrentUser()
         import.status = false
-        return importRepository.save(import).id!!
+        import.createdAt = Instant.now()
+        import.filename = filename
+        return importRepository.save(import)
     }
     fun updateImport(id: Long, count: Int) {
         val import = importRepository.findById(id).get()

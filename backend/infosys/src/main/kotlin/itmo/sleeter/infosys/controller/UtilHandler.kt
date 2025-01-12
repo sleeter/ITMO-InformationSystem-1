@@ -27,11 +27,11 @@ class UtilHandler(
 
     @PostMapping
     fun parseFileAndInsert(@RequestParam("file") file: MultipartFile): ResponseEntity<Void> {
-        val id = importService.saveImport()
+        val import = importService.saveImport(file.originalFilename!!)
         simpMessagingTemplate.convertAndSend("/topic/app", "")
         val data = parseService.parseYaml(file)
-        val count = flatService.createFlatsAndHousesFromFile(data)
-        importService.updateImport(id, count)
+        val count = flatService.createFlatsAndHousesFromFile(data, file, import)
+        importService.updateImport(import.id!!, count)
         simpMessagingTemplate.convertAndSend("/topic/app", "")
         return ResponseEntity.noContent().build()
     }

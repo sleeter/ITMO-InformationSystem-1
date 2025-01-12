@@ -15,6 +15,7 @@ import itmo.sleeter.infosys.enumeration.View
 import itmo.sleeter.infosys.exception.EntityNotFoundException
 import itmo.sleeter.infosys.mapper.FlatMapper
 import itmo.sleeter.infosys.model.Flat
+import itmo.sleeter.infosys.model.Import
 import itmo.sleeter.infosys.repository.FlatRepository
 import itmo.sleeter.infosys.specification.FlatSpecification
 import jakarta.persistence.EntityExistsException
@@ -24,6 +25,7 @@ import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Isolation
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.multipart.MultipartFile
 import java.time.Instant
 
 @Service
@@ -32,7 +34,8 @@ class FlatService(
     private val flatMapper: FlatMapper,
     private val coordinateService: CoordinateService,
     private val houseService: HouseService,
-    private val userService: UserService
+    private val userService: UserService,
+    private val minioService: MinioService
 ) {
 
     fun getFlatById(id : Long) : FlatResponse {
@@ -172,9 +175,14 @@ class FlatService(
         }
     }
     @Transactional(isolation = Isolation.READ_UNCOMMITTED)
-    fun createFlatsAndHousesFromFile(data: YamlData): Int {
+    fun createFlatsAndHousesFromFile(data: YamlData, file: MultipartFile, import: Import): Int {
         val count1 = houseService.createHousesFromFile(data.house)
         val count2 = createFlatsFromFile(data.flat)
+        try {
+            minioService.saveFile(import, file)
+        } catch (e: Exception) {
+            throw RuntimeException("Ошибка сохранения файла в MinIO", e)
+        }
         return count1 + count2
     }
     fun createFlatsFromFile(flats: List<itmo.sleeter.infosys.dto.request.yaml.Flat>): Int {

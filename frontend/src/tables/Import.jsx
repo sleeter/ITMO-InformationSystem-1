@@ -59,6 +59,41 @@ const ImportTable = () => {
             })
         })
     }
+    const downloadFile = async (id, filename) => {
+        const jwtToken = localStorage.getItem('jwtToken');
+        try {
+            const response = await fetch(`http://localhost:8080/api/file?import=${id}&filename=${filename}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${jwtToken}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Не удалось загрузить файл');
+            }
+
+            // Преобразование ответа в Blob (двойтичные данные)
+            const blob = await response.blob();
+
+            // Создаем временную ссылку для скачивания файла
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', filename); // Устанавливаем имя файла
+
+            // Добавляем ссылку на страницу и "кликаем" по ней для загрузки
+            document.body.appendChild(link);
+            link.click();
+
+            // Удаляем временную ссылку и элемент
+            link.parentNode.removeChild(link);
+            window.URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error('Ошибка при загрузке данных:', error);
+        }
+    };
 
     // Обработчики для переключения страниц
     const handleNext = () => {
@@ -82,18 +117,24 @@ const ImportTable = () => {
                     <thead>
                     <tr>
                         <th>ID</th>
+                        <th>Filename</th>
                         <th>Status</th>
                         <th>User ID</th>
                         <th>Count</th>
+                        <th>Download</th>
                     </tr>
                     </thead>
                     <tbody>
                     {imports.map((imp) => (
                         <tr key={imp.id}>
                             <td>{imp.id}</td>
+                            <td>{imp.filename}</td>
                             <td>{imp.status ? "accepted" : "rejected"}</td>
                             <td>{imp.user_id}</td>
                             <td>{imp.count_of_objects}</td>
+                            <td>
+                                <button onClick={() => downloadFile(imp.id, imp.filename)}>Download</button>
+                            </td>
                         </tr>
                     ))}
                     </tbody>

@@ -2,6 +2,9 @@ package itmo.sleeter.infosys.model
 
 import jakarta.persistence.*
 import jakarta.validation.constraints.NotNull
+import jakarta.validation.constraints.Size
+import org.hibernate.annotations.ColumnDefault
+import java.time.Instant
 
 @Entity
 @Table(name = "imports")
@@ -23,4 +26,13 @@ class Import {
     @NotNull
     @Column(name = "count", nullable = false)
     var count: Int? = null
+
+    @ColumnDefault("CURRENT_TIMESTAMP")
+    @Column(name = "created_at")
+    var createdAt: Instant? = null
+
+    @Size(max = 50)
+    @NotNull
+    @Column(name = "filename", nullable = false, length = 50)
+    var filename: String? = null
 }

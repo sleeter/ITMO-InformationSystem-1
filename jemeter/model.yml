@@ -17,7 +17,9 @@ house:
 
 flat:
   - name: "Sunny Apartment"
-    coordinates_id: 1
+    coordinates:
+      - x: 60
+        y: 50
     area: 55.5
     price: 35000.0
     balcony: true
@@ -28,7 +30,9 @@ flat:
     transport: "NORMAL"
     house_id: 1
   - name: "Cozy Nest"
-    coordinates_id: 1
+    coordinates:
+      - x: 50
+        y: 60
     area: 42.0
     price: 25000.0
     balcony: false

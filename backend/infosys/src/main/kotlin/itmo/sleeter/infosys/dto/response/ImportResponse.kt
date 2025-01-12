@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 
 data class ImportResponse(
     val id: Long,
+    val filename: String,
     val status: Boolean,
     @JsonProperty("user_id")
     val userId: Long,

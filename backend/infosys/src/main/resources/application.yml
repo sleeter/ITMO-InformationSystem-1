@@ -13,3 +13,9 @@ spring:
 jwt:
   secret: 3RH7aHFDcWmpvtvAUhssAPSWheh87wWtu52HQvdlkDch7JkGrnKVsh9FJknroEC2
   exp: 86_400 # 60 * 60 * 24 - day
+
+minio:
+  endpoint: http://localhost:9000
+  username: admin
+  password: password
+  bucket: infosys
