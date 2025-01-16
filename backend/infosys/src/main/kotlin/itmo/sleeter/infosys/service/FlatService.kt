@@ -181,7 +181,7 @@ class FlatService(
         try {
             minioService.saveFile(import, file)
         } catch (e: Exception) {
-            throw RuntimeException("Ошибка сохранения файла в MinIO", e)
+            throw RuntimeException("Error with save file", e)
         }
         return count1 + count2
     }

@@ -18,7 +18,7 @@ import org.springframework.web.multipart.MultipartFile
 
 @RestController
 @RequestMapping("/infosys/lab2")
-class UtilHandler(
+class ImportController(
     private val parseService: ParseService,
     private val flatService: FlatService,
     private val importService: ImportService,
@@ -27,11 +27,13 @@ class UtilHandler(
 
     @PostMapping
     fun parseFileAndInsert(@RequestParam("file") file: MultipartFile): ResponseEntity<Void> {
-        val import = importService.saveImport(file.originalFilename!!)
+        val import = file.originalFilename?.let { importService.saveImport(it) }
         simpMessagingTemplate.convertAndSend("/topic/app", "")
         val data = parseService.parseYaml(file)
-        val count = flatService.createFlatsAndHousesFromFile(data, file, import)
-        importService.updateImport(import.id!!, count)
+        val count = import?.let { flatService.createFlatsAndHousesFromFile(data, file, it) }
+        if (import != null && count != null) {
+            import.id?.let { importService.updateImport(it, count) }
+        }
         simpMessagingTemplate.convertAndSend("/topic/app", "")
         return ResponseEntity.noContent().build()
     }
