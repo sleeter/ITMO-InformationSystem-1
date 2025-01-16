@@ -14,9 +14,9 @@ class ParseService(
     private val validator: Validator,
 ) {
 
-    fun parseYaml(yamlFile: MultipartFile): YamlData {
+    fun parseYaml(yamlFile: ByteArray): YamlData {
         val mapper: ObjectMapper = ObjectMapper(YAMLFactory()).registerKotlinModule()
-        val data: YamlData = mapper.readValue(yamlFile.bytes, YamlData::class.java)
+        val data: YamlData = mapper.readValue(yamlFile, YamlData::class.java)
 
         val errors = validator.validate(data)
 

@@ -26,7 +26,7 @@
         </collectionProp>
       </HeaderManager>
       <hashTree/>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Basic operations" enabled="true">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Basic operations">
         <intProp name="ThreadGroup.num_threads">3</intProp>
         <intProp name="ThreadGroup.ramp_time">1</intProp>
         <longProp name="ThreadGroup.duration">10</longProp>
@@ -433,7 +433,7 @@
         </Arguments>
         <hashTree/>
       </hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Одновременное создание" enabled="true">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Одновременное создание">
         <intProp name="ThreadGroup.num_threads">2</intProp>
         <stringProp name="ThreadGroup.ramp_time">0.5</stringProp>
         <longProp name="ThreadGroup.duration">10</longProp>

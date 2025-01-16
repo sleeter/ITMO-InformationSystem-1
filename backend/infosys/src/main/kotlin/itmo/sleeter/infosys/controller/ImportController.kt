@@ -1,6 +1,7 @@
 package itmo.sleeter.infosys.controller
 
 import itmo.sleeter.infosys.dto.response.ImportResponse
+import itmo.sleeter.infosys.kafka.KafkaMessagingService
 import itmo.sleeter.infosys.service.FlatService
 import itmo.sleeter.infosys.service.ImportService
 import itmo.sleeter.infosys.service.ParseService
@@ -19,21 +20,15 @@ import org.springframework.web.multipart.MultipartFile
 @RestController
 @RequestMapping("/infosys/lab2")
 class ImportController(
-    private val parseService: ParseService,
-    private val flatService: FlatService,
     private val importService: ImportService,
+    private val kafkaMessagingService: KafkaMessagingService,
     private val simpMessagingTemplate: SimpMessagingTemplate,
 ) {
 
     @PostMapping
     fun parseFileAndInsert(@RequestParam("file") file: MultipartFile): ResponseEntity<Void> {
         val import = file.originalFilename?.let { importService.saveImport(it) }
-        simpMessagingTemplate.convertAndSend("/topic/app", "")
-        val data = parseService.parseYaml(file)
-        val count = import?.let { flatService.createFlatsAndHousesFromFile(data, file, it) }
-        if (import != null && count != null) {
-            import.id?.let { importService.updateImport(it, count) }
-        }
+        import?.id?.let { kafkaMessagingService.sendFile(file, it) }
         simpMessagingTemplate.convertAndSend("/topic/app", "")
         return ResponseEntity.noContent().build()
     }

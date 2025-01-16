@@ -17,7 +17,7 @@ class Import {
 
     @NotNull
     @Column(name = "status", nullable = false)
-    var status: Boolean? = false
+    var status: String? = null
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_create_id")

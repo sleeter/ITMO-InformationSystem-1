@@ -54,7 +54,7 @@ CREATE TABLE Requests (
 
 CREATE TABLE imports (
     id bigserial primary key,
-    status boolean not null,
+    status varchar(50) not null,
     user_create_id bigint references Users(id),
     created_at timestamp default current_timestamp,
     filename varchar(50) not null,

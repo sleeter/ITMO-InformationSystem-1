@@ -129,7 +129,7 @@ const ImportTable = () => {
                         <tr key={imp.id}>
                             <td>{imp.id}</td>
                             <td>{imp.filename}</td>
-                            <td>{imp.status ? "accepted" : "rejected"}</td>
+                            <td>{imp.status}</td>
                             <td>{imp.user_id}</td>
                             <td>{imp.count_of_objects}</td>
                             {imp.count_of_objects !== 0 ? <td>

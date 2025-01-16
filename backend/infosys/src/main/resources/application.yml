@@ -9,6 +9,28 @@ spring:
   liquibase:
     enabled: true
     change-log: classpath:db/changelog/changelog.xml
+  kafka:
+    bootstrap-servers: localhost:29092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        acks: 1
+        spring:
+          json:
+            add:
+              type:
+                headers: false
+    consumer:
+      group-id: "file-1"
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring:
+          json:
+            trusted:
+              packages: '*'
 
 jwt:
   secret: 3RH7aHFDcWmpvtvAUhssAPSWheh87wWtu52HQvdlkDch7JkGrnKVsh9FJknroEC2
@@ -19,3 +41,6 @@ minio:
   username: admin
   password: password
   bucket: infosys
+
+topic:
+  send-file: send-file-to-parse-and-save-event
