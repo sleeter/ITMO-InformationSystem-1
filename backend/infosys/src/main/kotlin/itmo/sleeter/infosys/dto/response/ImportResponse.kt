@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 data class ImportResponse(
     val id: Long,
     val filename: String,
-    val status: Boolean,
+    val status: String,
     @JsonProperty("user_id")
     val userId: Long,
     @JsonProperty("count_of_objects")

@@ -5,10 +5,7 @@ import itmo.sleeter.infosys.dto.request.CreateHouseRequest
 import itmo.sleeter.infosys.dto.request.FlatFilter
 import itmo.sleeter.infosys.dto.request.UpdateFlatRequest
 import itmo.sleeter.infosys.dto.request.yaml.YamlData
-import itmo.sleeter.infosys.dto.response.FlatResponse
-import itmo.sleeter.infosys.dto.response.FurnishResponse
-import itmo.sleeter.infosys.dto.response.TransportResponse
-import itmo.sleeter.infosys.dto.response.ViewResponse
+import itmo.sleeter.infosys.dto.response.*
 import itmo.sleeter.infosys.enumeration.Furnish
 import itmo.sleeter.infosys.enumeration.Transport
 import itmo.sleeter.infosys.enumeration.View
@@ -174,19 +171,9 @@ class FlatService(
         )
         }
     }
-    @Transactional(isolation = Isolation.READ_UNCOMMITTED)
-    fun createFlatsAndHousesFromFile(data: YamlData, file: MultipartFile, import: Import): Int {
-        val count1 = houseService.createHousesFromFile(data.house)
-        val count2 = createFlatsFromFile(data.flat)
-        try {
-            minioService.saveFile(import, file)
-        } catch (e: Exception) {
-            throw RuntimeException("Error with save file", e)
-        }
-        return count1 + count2
-    }
-    fun createFlatsFromFile(flats: List<itmo.sleeter.infosys.dto.request.yaml.Flat>): Int {
+    fun createFlatsFromFile(flats: List<itmo.sleeter.infosys.dto.request.yaml.Flat>, user: UserResponse): Int {
         val arr = mutableListOf<Flat>()
+        val currentUser = userService.getUser(user.id)
         var count: Int = 0
         flats.forEach { flat ->
             val uniqueFlat = flatRepository.findFlatByName(flat.name)
@@ -205,8 +192,8 @@ class FlatService(
             f.transport = flat.transport
             f.creationDate = Instant.now()
             f.updatedAt = Instant.now()
-            f.userCreate = userService.getCurrentUser()
-            f.userUpdate = userService.getCurrentUser()
+            f.userCreate = currentUser
+            f.userUpdate = currentUser
             if (flat.coordinatesId != null) {
                 f.coordinates = coordinateService.findCoordinateById(flat.coordinatesId)
             } else if (flat.coordinates != null) {
@@ -220,9 +207,9 @@ class FlatService(
                     flat.house.first().name,
                     flat.house.first().numberOfLifts,
                     flat.house.first().year,
-                    userService.getCurrentUser().id!!,
+                    user.id,
                 )
-                val h = houseService.createHouse(req)
+                val h = houseService.createHouseWithUser(req, currentUser)
                 f.house = houseService.getHouse(h.id)
                 count++
             }

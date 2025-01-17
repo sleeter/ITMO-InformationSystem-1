@@ -34,6 +34,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-websocket")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("io.minio:minio:8.5.2")
+	implementation("org.springframework.kafka:spring-kafka")
 	implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.15.2")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.liquibase:liquibase-core")

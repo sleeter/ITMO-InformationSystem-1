@@ -37,15 +37,15 @@ class ImportService(
         val import = Import()
         import.count = 0
         import.userCreate = userService.getCurrentUser()
-        import.status = false
+        import.status = "processing"
         import.createdAt = Instant.now()
         import.filename = filename
         return importRepository.save(import)
     }
-    fun updateImport(id: Long, count: Int) {
+    fun updateImport(id: Long, count: Int, status: String) {
         val import = importRepository.findById(id).get()
         import.count = count
-        import.status = true
+        import.status = status
         importRepository.save(import)
     }
 }
